@@ -60,12 +60,12 @@ class ETTODAY(object):
         return self.sreq.get(url, data=payload)
 
     def _get_news_tags(self, soup, label):
+        tag_label = []
         try:
-            tag_label = soup.find(class_='label').find_all('a')
-            for x in tag_label:
+            tags = soup.find(class_=label).find_all('a')
+            for x in tags:
                 tag_label.append(x.text)
-            logging.info(
-                'BeautifulSoup get tags [%s] : %s' % label, str(tag_label))
+            logging.info( 'BeautifulSoup get tags [%s] : %s' % (label, str(tag_label)) )
         except AttributeError as e:
             tag_label = []
             logging.error('BeautifulSoup get tag [%s] fails.' % label)
@@ -81,8 +81,7 @@ class ETTODAY(object):
 
         soup = BeautifulSoup(rep.text, 'lxml')
         try:
-            all_news_list = soup.find_all(
-                class_='part_list_2')[0].find_all('h3')
+            all_news_list = soup.find_all(class_='part_list_2')[0].find_all('h3')
         except AttributeError as e:
             logging.critical('BeautifulSoup analyze fails. : %s' % e)
             raise
@@ -113,6 +112,7 @@ class ETTODAY(object):
 
         soup = BeautifulSoup(rep.text, 'lxml')
         try:
+            # TODO 標題 bs4 方法不同需要檢查
             news_title = soup.h1.text
             logging.debug('BeautifulSoup get title: %s' % news_title)
         except AttributeError as e:
@@ -132,12 +132,13 @@ class ETTODAY(object):
                 or re.match('https://house.', rep.url)\
                 or re.match('https://travel.', rep.url)\
                 or re.match('https://health.', rep.url)\
-                or re.match('https://speed.', rep.url):
+                or re.match('https://speed.', rep.url)\
+                or re.match('https://discovery.', rep.url):
             news_tags = news_tags + self._get_news_tags(soup, 'tag')
         elif re.match('https://forum.', rep.url):
             news_tags = news_tags + self._get_news_tags(soup, 'part_tag')
         else:
-            logging.error('BeautifulSoup get tags fails. : %s' % rep.url)
+            logging.error('BeautifulSoup get website tags fails. : %s' % rep.url)
 
         logging.debug('BeautifulSoup get tags: %s' % str(news_tags))
 
@@ -201,8 +202,7 @@ class ETTODAY(object):
                             logging.info('Insert ArticleLinks.')
                             commit()
                         except TransactionIntegrityError as e:
-                            logging.warning('Insert ArticleLinks Fails: %s' %
-                                  news_link)
+                            logging.warning('Insert ArticleLinks Fails: %s' % news_link)
 
                 with db_session:
                     for img_url, img_alt in news_imgs.items():
@@ -212,13 +212,11 @@ class ETTODAY(object):
                             logging.info('Insert ArticleImages.')
                             commit()
                         except TransactionIntegrityError as e:
-                            logging.warning('Insert ArticleImages Fails: %s' %
-                                  img_url)
+                            logging.warning('Insert ArticleImages Fails: %s' % img_url)
 
             with db_session:
                 QueueUrlEttoday[queue_url.id].fetch_state = True
-                QueueUrlEttoday[queue_url.id].fetch_date = time.strftime(
-                    '%Y-%m-%d')
+                QueueUrlEttoday[queue_url.id].fetch_date = time.strftime('%Y-%m-%d')
 
     def run(self,):
         # TODO daemonize
