@@ -23,6 +23,8 @@ class ETTODAY(object):
     base_url = 'https://www.ettoday.net'
     list_path = '/news/news-list-%s-%s.htm'
 
+    error_msg = {'url': '', 'code': '', 'reason': ''}
+
     # TODO userless
     headers = {
         'User-Agent':  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'
@@ -51,13 +53,24 @@ class ETTODAY(object):
         self.db.bind(provider='mysql', host='', user='', passwd='', db='')
         self.db.generate_mapping(create_tables=True)
 
+    def _set_error_msg(self, rep):
+        self.error_msg['url'] = rep.url
+        self.error_msg['code'] = rep.status_code
+        self.error_msg['reason'] = rep.reason
+
+        return True
+
     @retry(tries=10, delay=3, logger=logging)
     def _get(self, url, payload={}):
-        return self.sreq.get(url, params=payload)
+        rep = self.sreq.get(url, params=payload)
+        self._set_error_msg(rep)
+        return rep
 
     @retry(tries=10, delay=3, logger=logging)
     def _post(self, url, payload={}):
-        return self.sreq.get(url, data=payload)
+        rep = self.sreq.get(url, data=payload)
+        self._set_error_msg(rep)
+        return rep
 
     def _get_news_tags(self, soup, label):
         tag_label = []
@@ -69,6 +82,7 @@ class ETTODAY(object):
         except AttributeError as e:
             tag_label = []
             logging.error('BeautifulSoup get tag [%s] fails.' % label)
+            logging.error('Error Msg' % self.error_msg)
 
         return tag_label
 
@@ -84,10 +98,12 @@ class ETTODAY(object):
             all_news_list = soup.find_all(class_='part_list_2')[0].find_all('h3')
         except AttributeError as e:
             logging.critical('BeautifulSoup analyze fails. : %s' % e)
+            logging.error('Error Msg' % self.error_msg)
             raise
         except:
             e = sys.exc_info()[0]
             logging.critical('%s' % e)
+            logging.error('Error Msg' % self.error_msg)
             raise
 
         return all_news_list
@@ -118,6 +134,7 @@ class ETTODAY(object):
         except AttributeError as e:
             news_title = ""
             logging.error('BeautifulSoup get title fails. : %s' % rep.url)
+            logging.error('Error Msg' % self.error_msg)
 
         news_tags = []
         if re.match('https://www.', rep.url):
@@ -139,6 +156,7 @@ class ETTODAY(object):
             news_tags = news_tags + self._get_news_tags(soup, 'part_tag')
         else:
             logging.error('BeautifulSoup get website tags fails. : %s' % rep.url)
+            logging.error('Error Msg' % self.error_msg)
 
         logging.debug('BeautifulSoup get tags: %s' % str(news_tags))
 
@@ -146,6 +164,7 @@ class ETTODAY(object):
             news_html = soup.find(class_='story')
         except AttributeError as e:
             logging.error('BeautifulSoup get content fails. : %s' % e)
+            logging.error('Error Msg' % self.error_msg)
 
         news_text = ''
         news_imgs = {}
@@ -192,6 +211,7 @@ class ETTODAY(object):
                     commit()
                 except TransactionIntegrityError as e:
                     logging.error('Insert Article Fails: %s' % news_url)
+                    logging.error('Error Msg' % self.error_msg)
 
             if article.id != None:
                 with db_session:
@@ -199,7 +219,7 @@ class ETTODAY(object):
                         article_links = ArticleLinks(
                             name=news_name, url=news_link, article=article.id)
                         try:
-                            logging.info('Insert ArticleLinks.')
+                            logging.info('Insert ArticleLinks.: %s' % news_link)
                             commit()
                         except TransactionIntegrityError as e:
                             logging.warning('Insert ArticleLinks Fails: %s' % news_link)
@@ -209,7 +229,7 @@ class ETTODAY(object):
                         article_imgs = ArticleImages(
                             alt=img_alt, url=img_url, article=article.id)
                         try:
-                            logging.info('Insert ArticleImages.')
+                            logging.info('Insert ArticleImages.: %s' % img_url)
                             commit()
                         except TransactionIntegrityError as e:
                             logging.warning('Insert ArticleImages Fails: %s' % img_url)
@@ -233,7 +253,7 @@ class ETTODAY(object):
 
 
 if __name__ == "__main__":
-    # TODO reduce error message
+    # DEBUG WARNING INFO
     logger_handle(level=logging.DEBUG, logger_file='tmp/%s.log' %
                   sys.argv[0].split('.')[0])
 
