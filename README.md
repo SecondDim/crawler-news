@@ -16,7 +16,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
 1. [東森新聞](https://news.ebc.net.tw/)
 1. [聯合新聞網](https://udn.com/news/index)
 1. [頻果新聞網](https://tw.appledaily.com/home)
-    - Maby need javascript
+    - Maybe need javascript
 1. [風傳媒](https://www.storm.mg/)
 1. [今日新聞](https://www.nownews.com/)
     - Need javascript, ddos protection.
@@ -30,6 +30,6 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
 1. [關鍵評論網](https://www.thenewslens.com/)
     - Non-instant news
 1. [今周刊](https://www.businesstoday.com.tw/)
-    - Maby need javascript
+    - Maybe need javascript
     - Non-instant news
     - Mostly for business news
