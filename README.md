@@ -33,3 +33,20 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - Maybe need javascript
     - Non-instant news
     - Mostly for business news
+
+## Crawler step
+1. Request news lists and get page url to add to queue.
+    - Use database queue.
+    - Because Crawler speed is too slow, no need memery queue.
+2. Request news page.
+3. Parsing html and get target value.
+    - News url
+    - Original html
+    - News title
+    - News text
+    - News tag
+    - News datetime
+4. Save into database
+    - Use sqlite3
+    - Maybe use Mysql in future
+5. Done
