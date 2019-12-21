@@ -16,6 +16,7 @@ class EttodaySpider(scrapy.Spider):
     name = 'ettoday'
     allowed_domains = ['ettoday.net']
     base_url = 'https://www.ettoday.net'
+    # download_delay = 1
 
     def start_requests(self):
         # TODO check date_page 1.exist 2.formet 3.default 2019-12-19
@@ -33,6 +34,7 @@ class EttodaySpider(scrapy.Spider):
 
     def parse_news(self, response):
         yield {
+            'url': response.url,
             'title': self._parse_title(response),
             'publish_date': self._parse_publish_date(response),
             'authors': self._parse_authors(response),
@@ -41,6 +43,7 @@ class EttodaySpider(scrapy.Spider):
             'text_html': self._parse_text_html(response),
             'images': self._parse_images(response),
             'video': self._parse_video(response),
+            'links': self._parse_links(response),
         }
 
     def _parse_title(self, response):
@@ -50,17 +53,17 @@ class EttodaySpider(scrapy.Spider):
         return response.css('time.date::text').get().strip()
 
     def _parse_authors(self, response):
-        return response.css('div.story>p *::text').re(r'記者.*報導')
+        return response.css('div.story>p *::text').re_first(r'記者.*報導')
 
     def _parse_tags(self, response):
         news_tags = []
         if re.match('https://www.', response.url):
-            response.css('div.part_menu_5>a::text').getall()
-            response.css('div.part_tag_1>a::text').getall()
+            news_tags = news_tags + response.css('div.part_menu_5>a::text').getall()
+            news_tags = news_tags + response.css('div.part_tag_1>a::text').getall()
         elif re.match('https://star.', response.url):
-            response.css('div.menu_txt_2>a::text').getall()
+            news_tags = response.css('div.menu_txt_2>a::text').getall()
         elif re.match('https://fashion.', response.url):
-            response.css('div.part_keyword>a::text').getall()
+            news_tags = response.css('div.part_keyword>a::text').getall()
         elif re.match('https://pets.', response.url) \
                 or re.match('https://sports.', response.url)\
                 or re.match('https://house.', response.url)\
@@ -86,4 +89,8 @@ class EttodaySpider(scrapy.Spider):
         return response.css('div.story').css('img::attr(src)').getall()
 
     def _parse_video(self, response):
+        # TODO
+        return []
+
+    def _parse_links(self, response):
         return response.css('div.story').css('a::attr(href)').getall()
