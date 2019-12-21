@@ -21,7 +21,6 @@ class TVBSSpider(scrapy.Spider):
         yield scrapy.Request(url=self.base_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        # * raise 404
         for page_url in response.css('div#now_news>ul>li>a::attr(href)').getall():
             yield scrapy.Request(url=self.base_url + page_url, callback=self.parse_news)
             # raise "[******] 測試抓一筆就好"
