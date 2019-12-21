@@ -25,7 +25,8 @@ class ETTODAY(object):
 
     error_msg = {'url': '', 'code': '', 'reason': ''}
 
-    # TODO userless
+    # TODO Like a general user
+    # Change IP is important issue more than use-agent
     headers = {
         'User-Agent':  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'
     }
@@ -72,20 +73,6 @@ class ETTODAY(object):
         self._set_error_msg(rep)
         return rep
 
-    def _get_news_tags(self, soup, label):
-        tag_label = []
-        try:
-            tags = soup.find(class_=label).find_all('a')
-            for x in tags:
-                tag_label.append(x.text)
-            logging.info( 'BeautifulSoup get tags [%s] : %s' % (label, str(tag_label)) )
-        except AttributeError as e:
-            tag_label = []
-            logging.error('BeautifulSoup get tag [%s] fails.' % label)
-            logging.error('Error Msg' % self.error_msg)
-
-        return tag_label
-
     def get_news_list(self, date, page):
         list_path = self.list_path % (date, page)
         rep = self._get(self.base_url + list_path)
@@ -118,6 +105,21 @@ class ETTODAY(object):
                     logging.info('Insert QueueUrlEttoday.url: %s' % news_url)
                     QueueUrlEttoday(url=news_url, fetch_state=False)
 
+    def _parser_news_tags(self, soup, label):
+        tag_label = []
+        try:
+            tags = soup.find(class_=label).find_all('a')
+            for x in tags:
+                tag_label.append(x.text)
+            logging.info( 'BeautifulSoup get tags [%s] : %s' % (label, str(tag_label)) )
+        except AttributeError as e:
+            tag_label = []
+            logging.error('BeautifulSoup get tag [%s] fails.' % label)
+            logging.error('Error Msg' % self.error_msg)
+
+        return tag_label
+
+
     def get_news(self, url):
         rep = self._get(self.base_url + url)
         logging.info('Request website url: %s' % rep.url)
@@ -127,8 +129,9 @@ class ETTODAY(object):
         news_url = rep.url
 
         soup = BeautifulSoup(rep.text, 'lxml')
+        # ! TODO 文章時間
+        # TODO 標題 bs4 方法不同需要檢查
         try:
-            # TODO 標題 bs4 方法不同需要檢查
             news_title = soup.h1.text
             logging.debug('BeautifulSoup get title: %s' % news_title)
         except AttributeError as e:
@@ -138,12 +141,12 @@ class ETTODAY(object):
 
         news_tags = []
         if re.match('https://www.', rep.url):
-            news_tags = news_tags + self._get_news_tags(soup, 'part_menu_5')
-            news_tags = news_tags + self._get_news_tags(soup, 'part_tag_1')
+            news_tags = news_tags + self._parser_news_tags(soup, 'part_menu_5')
+            news_tags = news_tags + self._parser_news_tags(soup, 'part_tag_1')
         elif re.match('https://star.', rep.url):
-            news_tags = news_tags + self._get_news_tags(soup, 'menu_txt_2')
+            news_tags = news_tags + self._parser_news_tags(soup, 'menu_txt_2')
         elif re.match('https://fashion.', rep.url):
-            news_tags = news_tags + self._get_news_tags(soup, 'part_keyword')
+            news_tags = news_tags + self._parser_news_tags(soup, 'part_keyword')
         elif re.match('https://pets.', rep.url) \
                 or re.match('https://sports.', rep.url)\
                 or re.match('https://house.', rep.url)\
@@ -151,9 +154,9 @@ class ETTODAY(object):
                 or re.match('https://health.', rep.url)\
                 or re.match('https://speed.', rep.url)\
                 or re.match('https://discovery.', rep.url):
-            news_tags = news_tags + self._get_news_tags(soup, 'tag')
+            news_tags = news_tags + self._parser_news_tags(soup, 'tag')
         elif re.match('https://forum.', rep.url):
-            news_tags = news_tags + self._get_news_tags(soup, 'part_tag')
+            news_tags = news_tags + self._parser_news_tags(soup, 'part_tag')
         else:
             logging.error('BeautifulSoup get website tags fails. : %s' % rep.url)
             logging.error('Error Msg' % self.error_msg)
@@ -189,7 +192,7 @@ class ETTODAY(object):
         return (news_url, news_title, news_tags, str(news_html), news_text, news_imgs, news_links)
 
 
-    def get_news_article(self, limit=1000):
+    def update_news_article(self, limit=1000):
 
         with db_session:
             queue_url_ettoday_list = \
@@ -242,14 +245,14 @@ class ETTODAY(object):
         # TODO daemonize
         self.update_news_list()
 
-        self.get_news_article()
+        self.update_news_article()
 
     def test(self,):
         # set_sql_debug(True)
 
         self.update_news_list()
 
-        self.get_news_article()
+        self.update_news_article()
 
 
 if __name__ == "__main__":
@@ -259,7 +262,3 @@ if __name__ == "__main__":
 
     ettoday = ETTODAY()
     ettoday.test()
-
-else:
-    logger_handle(level=logging.WARNING, logger_file='tmp/%s.log' %
-                  sys.argv[0].split('.')[0])
