@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # mac shell example
-# scrapy crawl setn -o tmp/setn.json
-# scrapy crawl setn -o tmp/setn_$(date +"%Y-%m-%d_%H:%M:%S").json
-
-# TODO 檢查 parser
+# scrapy crawl setn -o tmp/setn_$(date +"%Y-%m-%d_%H %M %S").json
 
 import scrapy
 
@@ -39,16 +36,22 @@ class LibertyTimesSpider(scrapy.Spider):
         }
 
     def _parse_title(self, response):
-        # TODO 娛樂版
-        return response.css('h1.news-title-3::text').get()
+        if re.match('https://www.setn.com/e', response.url):
+            return response.css('h1#newsTitle::text').get()
+        else:
+            return response.css('h1.news-title-3::text').get()
 
     def _parse_publish_date(self, response):
-        # TODO 娛樂版
-        return response.css('time.page-date::text').get()
+        if re.match('https://www.setn.com/e', response.url):
+            return response.css('div.titleBtnBlock>div.time::text').get()
+        else:
+            return response.css('time.page-date::text').get()
 
     def _parse_authors(self, response):
-        # TODO 娛樂版
-        return response.css('div#Content1>p::text').get()
+        if re.match('https://www.setn.com/e', response.url):
+            return response.css('div.Content2>p::text').get()
+        else:
+            return response.css('div#Content1>p::text').get()
 
     def _parse_tags(self, response):
         return response.css('div.page-keyword-area ul>li>a>strong::text').getall()
