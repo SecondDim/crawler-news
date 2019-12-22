@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # mac shell example
-# scrapy crawl setn -o tmp/setn_$(date +"%Y-%m-%d_%H %M %S").json
+# scrapy crawl setn -o tmp/ebc$(date +"%Y-%m-%d_%H_%M_%S").json
 
 import scrapy
 
 import re
 
-class LibertyTimesSpider(scrapy.Spider):
+class SetnSpider(scrapy.Spider):
     name = 'setn'
     allowed_domains = ['setn.com']
     base_url = 'https://www.setn.com'
