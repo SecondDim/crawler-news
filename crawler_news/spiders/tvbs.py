@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # mac shell example
-# scrapy crawl tvbs -o tmp/tvbs.json
-# scrapy crawl tvbs -o tmp/tvbs_$(date +"%Y-%m-%d_%H:%M:%S").json
+# scrapy crawl tvbs
 
 # TODO 檢查 parser
 
@@ -19,7 +18,9 @@ class TVBSSpider(scrapy.Spider):
     custom_settings = {
         'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG'
+        'LOG_LEVEL': 'DEBUG',
+        'FEED_URI': 'tmp/%s-%s.json' % (name, str(int(time.time()))),
+        'FEED_FORMAT': 'json',
     }
 
     def start_requests(self):

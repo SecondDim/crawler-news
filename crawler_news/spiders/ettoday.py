@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # mac shell example
-# scrapy crawl ettoday -o tmp/ettoday.json -a page=2019-12-19
-# scrapy crawl ettoday -o tmp/ettoday.json -a page=$(date +"%Y-%m-%d")
-# scrapy crawl ettoday -o tmp/ettoday_$(date +"%Y-%m-%d_%H:%M:%S").json -a page=$(date +"%Y-%m-%d")
-
-# TODO 檢查 parser
+# scrapy crawl ettoday -a page=$(date +"%Y-%m-%d")
 
 import scrapy
 
@@ -20,7 +16,9 @@ class EttodaySpider(scrapy.Spider):
     custom_settings = {
         'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG'
+        'LOG_LEVEL': 'DEBUG',
+        'FEED_URI': 'tmp/%s-%s.json' % (name, str(int(time.time()))),
+        'FEED_FORMAT': 'json',
     }
 
     def start_requests(self):
@@ -35,7 +33,6 @@ class EttodaySpider(scrapy.Spider):
         # * raise 404
         for page_url in response.css('div.part_list_2>h3>a::attr(href)').getall():
             yield scrapy.Request(url=self.base_url + page_url, callback=self.parse_news)
-            # raise "[******] 測試抓一筆就好"
 
     def parse_news(self, response):
         yield {

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # mac shell example
-# scrapy crawl ebc -o tmp/ebc$(date +"%Y-%m-%d_%H_%M_%S").json
+# scrapy crawl ebc
 
 import scrapy
 
@@ -16,7 +16,9 @@ class EBCSpider(scrapy.Spider):
     custom_settings = {
         'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG'
+        'LOG_LEVEL': 'DEBUG',
+        'FEED_URI': 'tmp/%s-%s.json' % (name, str(int(time.time()))),
+        'FEED_FORMAT': 'json',
     }
 
     def start_requests(self):
