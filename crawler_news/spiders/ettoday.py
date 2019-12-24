@@ -16,7 +16,12 @@ class EttodaySpider(scrapy.Spider):
     name = 'ettoday'
     allowed_domains = ['ettoday.net']
     base_url = 'https://www.ettoday.net'
-    # download_delay = 1
+
+    custom_settings = {
+        'DOWNLOAD_DELAY': 1,
+        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
+        'LOG_LEVEL': 'DEBUG'
+    }
 
     def start_requests(self):
         # TODO check date_page 1.exist 2.formet 3.default 2019-12-19

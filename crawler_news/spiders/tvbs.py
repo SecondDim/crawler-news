@@ -15,7 +15,12 @@ class TVBSSpider(scrapy.Spider):
     name = 'tvbs'
     allowed_domains = ['tvbs.com.tw']
     base_url = 'https://news.tvbs.com.tw'
-    # download_delay = 1
+
+    custom_settings = {
+        'DOWNLOAD_DELAY': 1,
+        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
+        'LOG_LEVEL': 'DEBUG'
+    }
 
     def start_requests(self):
         yield scrapy.Request(url=self.base_url, callback=self.parse_list)

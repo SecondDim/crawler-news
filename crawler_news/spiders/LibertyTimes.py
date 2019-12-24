@@ -8,13 +8,19 @@
 
 import scrapy
 
+import time
 import re
 
 class LibertyTimesSpider(scrapy.Spider):
     name = 'libertytimes'
     allowed_domains = ['ltn.com.tw']
     base_url = 'https://news.ltn.com.tw'
-    # download_delay = 1
+
+    custom_settings = {
+        'DOWNLOAD_DELAY': 1,
+        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
+        'LOG_LEVEL': 'DEBUG'
+    }
 
     def start_requests(self):
         list_url = '%s/list/breakingnews' % self.base_url

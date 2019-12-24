@@ -5,13 +5,19 @@
 
 import scrapy
 
+import time
 import re
 
 class EBCSpider(scrapy.Spider):
     name = 'ebc'
     allowed_domains = ['news.ebc.net.tw']
     base_url = 'https://news.ebc.net.tw'
-    # download_delay = 1
+
+    custom_settings = {
+        'DOWNLOAD_DELAY': 1,
+        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
+        'LOG_LEVEL': 'DEBUG'
+    }
 
     def start_requests(self):
         list_url = 'https://news.ebc.net.tw/Realtime'
@@ -73,4 +79,3 @@ class EBCSpider(scrapy.Spider):
 
     def _parse_links(self, response):
         return response.css('span[data-reactroot=\'\']').css('a::attr(href)').getall()
-        

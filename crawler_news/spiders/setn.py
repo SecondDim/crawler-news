@@ -5,13 +5,19 @@
 
 import scrapy
 
+import time
 import re
 
 class SetnSpider(scrapy.Spider):
     name = 'setn'
     allowed_domains = ['setn.com']
     base_url = 'https://www.setn.com'
-    # download_delay = 1
+
+    custom_settings = {
+        'DOWNLOAD_DELAY': 1,
+        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
+        'LOG_LEVEL': 'DEBUG'
+    }
 
     def start_requests(self):
         list_url = 'https://www.setn.com/ViewAll.aspx?PageGroupID=1'
@@ -70,4 +76,3 @@ class SetnSpider(scrapy.Spider):
 
     def _parse_links(self, response):
         return response.css('article').css('a::attr(href)').getall()
-        
