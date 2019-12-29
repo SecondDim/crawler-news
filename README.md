@@ -39,6 +39,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - Mostly for business news
 
 ## Crawler step
+
 1. Request news lists and get page url to add to queue.
     - Use database queue.
     - Because Crawler speed is too slow, no need memery queue.
@@ -54,3 +55,17 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - Use sqlite3
     - Maybe use Mysql in future
 5. Done
+
+## Install Cassandra Database
+
+mac os
+
+```bash
+    brew install cassandra
+```
+
+python extension
+
+```bash
+    pip install cassandra-driver
+```
