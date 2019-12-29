@@ -257,7 +257,7 @@ class ETTODAY(object):
 
 if __name__ == "__main__":
     # DEBUG WARNING INFO
-    logger_handle(level=logging.DEBUG, logger_file='tmp/%s.log' %
+    logger_handle(level=logging.DEBUG, logger_file='log/%s.log' %
                   sys.argv[0].split('.')[0])
 
     ettoday = ETTODAY()

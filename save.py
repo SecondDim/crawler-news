@@ -1,7 +1,8 @@
 from src.logger_handle import *
-# from src.CassandraDatabase import CassandraDatabase
+from src.CassandraDatabase import CassandraDatabase
 
-# db = CassandraDatabase('test')
+db = CassandraDatabase('test', 'test')
+db.create_table()
 
 import os
 import time
@@ -23,8 +24,22 @@ for file_name in os.listdir('tmp/'):
                 data_rows = json.loads( f.read() )
 
             for row in data_rows:
-                logging.debug('Row data url: %s' % row['url'])
-                print(row['url'])
+                url = row['url']
+
+                logging.debug('Row data url: %s' % url)
+                news = db.fetchOne(url)
+
+                if news == None:
+                    # TODO 將直轉為str，因為 cassandra 太機八
+                    # for
+                    # map(lambda k: print(k), [1,2,4,5,6])
+                    # lambda
+                    # 直接塞 & next
+                    a = db.insert(row)
+                    print(a)
+
+
+
             # 讀檔案
             # 判斷內容hash
             # 塞 - 直接塞
