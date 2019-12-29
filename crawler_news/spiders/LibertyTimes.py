@@ -6,6 +6,7 @@
 # TODO 檢查 parser
 
 import scrapy
+from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
@@ -19,8 +20,6 @@ class LibertyTimesSpider(scrapy.Spider):
         'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
         'LOG_LEVEL': 'DEBUG',
-        'FEED_URI': 'tmp/%s-%s.json' % (name, str(int(time.time()))),
-        'FEED_FORMAT': 'json',
     }
 
     def start_requests(self):
@@ -31,21 +30,22 @@ class LibertyTimesSpider(scrapy.Spider):
         # * raise 404
         for page_url in response.css('ul.list>li>a.tit::attr(href)').getall():
             yield scrapy.Request(url=page_url, callback=self.parse_news)
-            # raise "[******] 測試抓一筆就好"
 
     def parse_news(self, response):
-        yield {
-            'url': response.url,
-            'title': self._parse_title(response),
-            'publish_date': self._parse_publish_date(response),
-            'authors': self._parse_authors(response),
-            'tags': self._parse_tags(response),
-            'text': self._parse_text(response),
-            'text_html': self._parse_text_html(response),
-            'images': self._parse_images(response),
-            'video': self._parse_video(response),
-            'links': self._parse_links(response),
-        }
+        item = CrawlerNewsItem()
+
+        item['url'] = response.url
+        item['title'] = self._parse_title(response)
+        item['publish_date'] = self._parse_publish_date(response)
+        item['authors'] = self._parse_authors(response)
+        item['tags'] = self._parse_tags(response)
+        item['text'] = self._parse_text(response)
+        item['text_html'] = self._parse_text_html(response)
+        item['images'] = self._parse_images(response)
+        item['video'] = self._parse_video(response)
+        item['links'] = self._parse_links(response)
+
+        return item
 
     def _parse_title(self, response):
         return response.css('h1::text').get()
@@ -62,11 +62,11 @@ class LibertyTimesSpider(scrapy.Spider):
 
     def _parse_authors(self, response):
         if re.match('https://sports', response.url):
-            return response.css('article *::text').re_first(r'記者.*報導')
+            return [response.css('article *::text').re_first(r'記者.*報導',defult='')]
         elif re.match('https://partners', response.url):
-            return response.css('article span::text').re_first(r'[0-9-]+ [0-9:]+')
+            return [response.css('article span::text').re_first(r'[0-9-]+ [0-9:]+',defult='')]
         else:
-            return response.css('div.text>p *::text').re_first(r'記者.*報導')
+            return [response.css('div.text>p *::text').re_first(r'記者.*報導',defult='')]
 
     def _parse_tags(self, response):
         # no tags

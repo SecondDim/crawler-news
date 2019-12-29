@@ -4,6 +4,7 @@
 # scrapy crawl setn
 
 import scrapy
+from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
@@ -17,8 +18,6 @@ class SetnSpider(scrapy.Spider):
         'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
         'LOG_LEVEL': 'DEBUG',
-        'FEED_URI': 'tmp/%s-%s.json' % (name, str(int(time.time()))),
-        'FEED_FORMAT': 'json',
     }
 
     def start_requests(self):
@@ -30,18 +29,20 @@ class SetnSpider(scrapy.Spider):
             yield scrapy.Request(url=self.base_url+page_url, callback=self.parse_news)
 
     def parse_news(self, response):
-        yield {
-            'url': response.url,
-            'title': self._parse_title(response),
-            'publish_date': self._parse_publish_date(response),
-            'authors': self._parse_authors(response),
-            'tags': self._parse_tags(response),
-            'text': self._parse_text(response),
-            'text_html': self._parse_text_html(response),
-            'images': self._parse_images(response),
-            'video': self._parse_video(response),
-            'links': self._parse_links(response),
-        }
+        item = CrawlerNewsItem()
+
+        item['url'] = response.url
+        item['title'] = self._parse_title(response)
+        item['publish_date'] = self._parse_publish_date(response)
+        item['authors'] = self._parse_authors(response)
+        item['tags'] = self._parse_tags(response)
+        item['text'] = self._parse_text(response)
+        item['text_html'] = self._parse_text_html(response)
+        item['images'] = self._parse_images(response)
+        item['video'] = self._parse_video(response)
+        item['links'] = self._parse_links(response)
+
+        return item
 
     def _parse_title(self, response):
         if re.match('https://www.setn.com/e', response.url):
@@ -57,9 +58,9 @@ class SetnSpider(scrapy.Spider):
 
     def _parse_authors(self, response):
         if re.match('https://www.setn.com/e', response.url):
-            return response.css('div.Content2>p::text').get()
+            return [response.css('div.Content2>p::text').get()]
         else:
-            return response.css('div#Content1>p::text').get()
+            return [response.css('div#Content1>p::text').get()]
 
     def _parse_tags(self, response):
         return response.css('div.page-keyword-area ul>li>a>strong::text').getall()
@@ -68,7 +69,7 @@ class SetnSpider(scrapy.Spider):
         return response.css('article p *::text').getall()
 
     def _parse_text_html(self, response):
-        return response.css('article').getall()
+        return response.css('article').get()
 
     def _parse_images(self, response):
         return response.css('article').css('img::attr(src)').getall()
