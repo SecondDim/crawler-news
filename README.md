@@ -69,3 +69,10 @@ python extension
 ```bash
     pip install cassandra-driver
 ```
+
+start cassandra
+
+```bash
+    # start on bash
+    cassandra -f
+```
