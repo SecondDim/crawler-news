@@ -18,7 +18,8 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - data uncheck
 1. [Test] [東森新聞](https://news.ebc.net.tw/)
     - data uncheck
-1. [聯合新聞網](https://udn.com/news/index)
+1. [Test] [聯合新聞網](https://udn.com/news/index)
+    - data uncheck
 1. [頻果新聞網](https://tw.appledaily.com/home)
     - Maybe need javascript
 1. [風傳媒](https://www.storm.mg/)
@@ -56,6 +57,14 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - Maybe use Mysql in future
 5. Done
 
+## Install scrapy
+
+```bash
+    pip install scrapy
+    or
+    pip3 install scrapy
+```
+
 ## Install Cassandra Database
 
 mac os
@@ -68,6 +77,8 @@ python extension
 
 ```bash
     pip install cassandra-driver
+    or
+    pip3 install cassandra-driver
 ```
 
 start cassandra
