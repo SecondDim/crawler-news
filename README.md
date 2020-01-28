@@ -30,7 +30,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
 1. [商業週刊](https://www.businessweekly.com.tw/)
     - Non-instant news
     - Mostly for business news
-1. [中時電子報](ㄘttps://www.chinatimes.com/)
+1. [中時電子報](https://www.chinatimes.com/)
 1. [大紀元](https://www.epochtimes.com/)
     - Political position is too biased.Need filiter sth artical.
 1. [中央通訊社](https://www.cna.com.tw/)
