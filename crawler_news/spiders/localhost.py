@@ -17,6 +17,11 @@ class LocalhostSpider(scrapy.Spider):
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
         'LOG_LEVEL': 'DEBUG',
+        'DEFAULT_REQUEST_HEADERS': {
+            'Accept': '*/*',
+            'Referer': 'https://www.nownews.com/',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     }
 
     def start_requests(self):
