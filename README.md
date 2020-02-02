@@ -98,7 +98,7 @@ python extension
 
 ```bash
     pip install cassandra-driver
-    or
+    # or
     pip3 install cassandra-driver
 ```
 
