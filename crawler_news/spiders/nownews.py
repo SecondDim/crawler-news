@@ -83,4 +83,3 @@ class NownewsSpider(scrapy.Spider):
     def _parse_links(self, response):
         links = response.css('article div.td-post-content').css('a::attr(href)').getall()
         return list(filter(lambda x:x if not x == '#' else None , links))
-
