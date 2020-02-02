@@ -91,3 +91,7 @@ ITEM_PIPELINES = {
 
 LOG_FILE='log/scrapy.log'
 LOG_LEVEL='WARNING' # ERROR # CRITICAL
+
+CASSANDRA_HOST = ['localhost'] # localhost
+CASSANDRA_KEYSPAC = 'test'
+CASSANDRA_TABLE = 'test'

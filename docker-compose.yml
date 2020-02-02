@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  cassandra:
+    image: 'cassandra:3.11'
+    ports:
+      - '7000:7000'
+      - '9042:9042'
+    volumes:
+      - './tmp/cassandra:/var/lib/cassandra'
+      # - './docker/cassandra.yaml:/etc/cassandra/cassandra.yaml'
+    environment:
+      - TZ=Asia/Taipei
+
+  crawler_news:
+    image: 'crawler_news:latest'
+    volumes:
+      - './tmp:/src/tmp'
+      - './log:/src/log'
+    depends_on:
+      - 'cassandra'
+    links:
+      - 'cassandra'
+    environment:
+      - TZ=Asia/Taipei
+
+
+
