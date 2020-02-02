@@ -10,6 +10,8 @@ import scrapy
 
 class CrawlerNewsItem(scrapy.Item):
     url = scrapy.Field() # str
+    article_from = scrapy.Field() # str
+    article_type = scrapy.Field() # str
     title = scrapy.Field() # str
     publish_date = scrapy.Field() # str
     authors = scrapy.Field() # list

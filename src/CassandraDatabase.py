@@ -37,8 +37,8 @@ class CassandraDatabase():
     def create_table(self,):
         sql = """
                 CREATE TABLE IF NOT EXISTS %s (
-                    url varchar PRIMARY KEY, title varchar,
-                    publish_date varchar, authors list<varchar>,
+                    url varchar PRIMARY KEY, article_from varchar, article_type varchar,
+                    title varchar, publish_date varchar, authors list<varchar>,
                     tags list<varchar>, text_ list<varchar>, text_html text,
                     images list<varchar>, video list<varchar>, links list<varchar>
                     );
@@ -60,10 +60,12 @@ class CassandraDatabase():
     def insert(self, data={}):
         sql = "INSERT INTO %s "% (self.table)
         sql = sql + """
-                (url, title, publish_date, authors, tags,
+                (url, article_from, article_type,
+                 title, publish_date, authors, tags,
                  text_, text_html, images, video, links)
                 VALUES
-                (%(url)s, %(title)s, %(publish_date)s, %(authors)s, %(tags)s,
+                (%(url)s, %(article_from)s, %(article_type)s,
+                 %(title)s, %(publish_date)s, %(authors)s, %(tags)s,
                  %(text)s, %(text_html)s, %(images)s, %(video)s, %(links)s)
             """
 

@@ -37,6 +37,9 @@ class EttodaySpider(scrapy.Spider):
         item = CrawlerNewsItem()
 
         item['url'] = response.url
+        item['article_from'] = self.name
+        item['article_type'] = 'news'
+
         item['title'] = self._parse_title(response)
         item['publish_date'] = self._parse_publish_date(response)
         item['authors'] = self._parse_authors(response)
