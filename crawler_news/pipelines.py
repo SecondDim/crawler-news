@@ -8,7 +8,7 @@
 from scrapy.exceptions import DropItem
 from src.CassandraDatabase import CassandraDatabase
 
-class CrawlerNewsPipeline(object):
+class CassandraPipeline(object):
     # TODO set database env in setting.py
     # def __init__(self, mongo_uri, mongo_db):
     #     self.mongo_uri = mongo_uri

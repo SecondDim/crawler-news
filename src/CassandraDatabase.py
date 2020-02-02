@@ -37,11 +37,22 @@ class CassandraDatabase():
     def create_table(self,):
         sql = """
                 CREATE TABLE IF NOT EXISTS %s (
-                    url varchar PRIMARY KEY, article_from varchar, article_type varchar,
+                    url varchar, article_from varchar, article_type varchar,
                     title varchar, publish_date varchar, authors list<varchar>,
                     tags list<varchar>, text_ list<varchar>, text_html text,
-                    images list<varchar>, video list<varchar>, links list<varchar>
+                    images list<varchar>, video list<varchar>, links list<varchar>,
+                PRIMARY KEY(url)
                     );
+            """ % self.table
+        self.query(sql)
+
+        sql = """
+                CREATE INDEX IF NOT EXISTS ON %s(article_from);
+            """ % self.table
+        self.query(sql)
+
+        sql = """
+                CREATE INDEX IF NOT EXISTS ON %s(article_type);
             """ % self.table
         self.query(sql)
 
