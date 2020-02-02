@@ -65,7 +65,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'crawler_news.pipelines.CassandraPipeline': 300,
+  'crawler_news.pipelines.CassandraPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

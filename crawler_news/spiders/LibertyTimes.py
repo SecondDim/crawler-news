@@ -65,11 +65,11 @@ class LibertyTimesSpider(scrapy.Spider):
 
     def _parse_authors(self, response):
         if re.match('https://sports', response.url):
-            return [response.css('article *::text').re_first(r'記者.*報導',defult='')]
+            return [response.css('article *::text').re_first(r'記者.*報導',default='')]
         elif re.match('https://partners', response.url):
-            return [response.css('article span::text').re_first(r'[0-9-]+ [0-9:]+',defult='')]
+            return [response.css('article span::text').re_first(r'[0-9-]+ [0-9:]+',default='')]
         else:
-            return [response.css('div.text>p *::text').re_first(r'記者.*報導',defult='')]
+            return [response.css('div.text>p *::text').re_first(r'記者.*報導',default='')]
 
     def _parse_tags(self, response):
         # no tags
