@@ -59,7 +59,7 @@ class EttodaySpider(scrapy.Spider):
         return response.css('time.date::text').get().strip()
 
     def _parse_authors(self, response):
-        return [response.css('div.story>p *::text').re_first(r'記者.*報導', defult='')]
+        return [response.css('div.story>p *::text').re_first(r'記者.*報導', default='')]
 
     def _parse_tags(self, response):
         news_tags = []
