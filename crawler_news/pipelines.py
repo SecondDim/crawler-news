@@ -22,7 +22,12 @@ class CassandraPipeline(object):
     #     )
 
     def open_spider(self, spider):
-        self.db = CassandraDatabase('test', 'test')
+        settings = spider.settings
+        self.db = CassandraDatabase(
+                        keyspace=settings['CASSANDRA_KEYSPAC'],
+                        table=settings['CASSANDRA_TABLE'],
+                        host=settings['CASSANDRA_HOST']
+                    )
         self.db.create_table()
 
     def close_spider(self, spider):

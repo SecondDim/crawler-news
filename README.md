@@ -107,4 +107,47 @@ start cassandra
 ```bash
     # start on bash
     cassandra -f
+
+    # start on backgroud
+```
+
+## RUN Project
+
+### Run all in localhost terminal
+
+```bash
+    ./run_spiders.sh
+```
+
+### Run in Docker use docker-compose.yml
+
+1. build docker image
+
+```bash
+    docker build . -t crawler_news
+```
+
+If you want exec crawler without database. modify docker/setting.py and re-build.
+
+```bash
+    # run without database (linux base command)
+    docker run --rm -it -v `pwd`/tmp:/src/tmp -v `pwd`/log:/src/log crawler_news
+```
+
+If you want exec single crawler. modify Dockerfile and re-build.
+
+```Dockerfile
+    CMD ["/bin/bash"]
+    # or assign crawler
+    CMD ["scrapy", "crawl", "ettoday"]
+```
+
+1. run docker-compose
+
+```bash
+    # start
+    docker-compose up -d
+
+    # stop
+    docker-compose down
 ```
