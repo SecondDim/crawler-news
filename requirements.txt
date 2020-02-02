@@ -1,0 +1,2 @@
+Scrapy==1.8.0
+cassandra-driver==3.21.0
