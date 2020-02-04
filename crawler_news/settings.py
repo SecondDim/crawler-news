@@ -90,7 +90,7 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 LOG_FILE='log/scrapy.log'
-LOG_LEVEL='WARNING' # ERROR # CRITICAL
+LOG_LEVEL='DEBUG' # DEBUG # WARNING # ERROR # CRITICAL
 
 CASSANDRA_HOST = ['localhost'] # localhost
 CASSANDRA_KEYSPAC = 'test'

@@ -11,6 +11,8 @@ from crawler_news.items import CrawlerNewsItem
 import time
 import re
 
+date_str = str(time.strftime("%F", time.localtime()))
+
 class LibertyTimesSpider(scrapy.Spider):
     name = 'libertytimes'
     allowed_domains = ['ltn.com.tw']
@@ -18,8 +20,7 @@ class LibertyTimesSpider(scrapy.Spider):
 
     custom_settings = {
         'DOWNLOAD_DELAY': 1,
-        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG',
+        'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
