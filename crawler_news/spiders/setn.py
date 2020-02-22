@@ -63,7 +63,12 @@ class SetnSpider(scrapy.Spider):
         if re.match('https://www.setn.com/e', response.url):
             return [response.css('div.Content2>p::text').get()]
         else:
-            return [response.css('div#Content1>p::text').get()]
+            authors = response.css('div#Content1>p::text').get()
+
+            if re.match(r'.+[／].+', authors) == None:
+                return [response.css('div.page-title-text span::text').get()]
+            else:
+                return [authors]
 
     def _parse_tags(self, response):
         return response.css('div.page-keyword-area ul>li>a>strong::text').getall()
