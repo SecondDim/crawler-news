@@ -19,7 +19,6 @@ class LibertyTimesSpider(scrapy.Spider):
     base_url = 'https://news.ltn.com.tw'
 
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 

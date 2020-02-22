@@ -20,7 +20,6 @@ class CnaSpider(scrapy.Spider):
     date_str = str(time.strftime("%F", time.localtime()))
 
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 

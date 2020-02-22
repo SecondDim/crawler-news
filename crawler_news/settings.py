@@ -89,6 +89,8 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+DOWNLOAD_DELAY=0
+
 LOG_FILE='log/scrapy.log'
 LOG_LEVEL='DEBUG' # DEBUG # WARNING # ERROR # CRITICAL
 
