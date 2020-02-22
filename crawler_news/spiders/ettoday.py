@@ -60,9 +60,9 @@ class EttodaySpider(scrapy.Spider):
 
     def _parse_publish_date(self, response):
         if re.match('https://pets.', response.url):
-            return response.css('time.news-time::text').get(default='None').strip()
+            return response.css('time.news-time::text').get(default='').strip()
         else:
-            return response.css('time.date::text').get(default='None').strip()
+            return response.css('time.date::text').get(default='').strip()
 
     def _parse_authors(self, response):
         authors = response.css('div.story>p *::text')
