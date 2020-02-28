@@ -13,7 +13,7 @@ import re
 
 date_str = str(time.strftime("%F", time.localtime()))
 
-class LibertyTimesSpider(scrapy.Spider):
+class LibertytimesSpider(scrapy.Spider):
     name = 'libertytimes'
     allowed_domains = ['ltn.com.tw']
     base_url = 'https://news.ltn.com.tw'
