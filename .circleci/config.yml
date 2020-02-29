@@ -11,11 +11,19 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run:
-          command: ./manage.py test
-          name: Test
+      # - run:
+      #     command: ./manage.py test
+      #     name: Test
+
+  # TODO
+  # deploy-to-gcp:
+  #   docker:
+  #     - image: ubuntu
+  #   steps:
+  #     -
 
 workflows:
   main:
     jobs:
       - build-and-test
+      # - deploy-to-gcp
