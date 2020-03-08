@@ -12,11 +12,15 @@ jobs:
     steps:
       - checkout
       - python/load-cache
+      - restore_cache:
+          keys:
+          - scrapy-{{ checksum "requirements.txt"  }}
       - python/install-deps
-      - run:
-          command: which scrapy
-          name: Which scrapy
       - python/save-cache
+      - save_cache:
+          key: scrapy-{{ checksum "requirements.txt"  }}
+          paths:
+            - /home/circleci/.local/bin/
       - run:
           command: scrapy check
           name: Test scrapy
