@@ -36,8 +36,6 @@ workflows:
                 - develop
                 - /feature.*/
                 - /circleci.*/
-  deploy:
-    jobs:
       - install_and_configure_cli:
           requires:
             - build-and-test
