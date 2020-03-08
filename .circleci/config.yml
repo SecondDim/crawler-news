@@ -24,16 +24,17 @@ jobs:
   #     -
 
 workflows:
-  develop:
+  build-test-deploy:
     jobs:
       - build-and-test:
           filters:
             branches:
-              - develop
-              # - circleci-project-setup
-      - deploy-to-gcp:
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              only: master
+              only:
+                - develop
+                - circleci-project-setup
+      # - deploy-to-gcp:
+      #     requires:
+      #       - build-and-test
+      #     filters:
+      #       branches:
+      #         only: master
