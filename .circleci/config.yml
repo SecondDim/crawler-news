@@ -13,13 +13,11 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          # command: echo $PATH
           command: scrapy check
           name: Test scrapy
-      - run:
-          command: pylint newspaper3k.py
-          # command: pylint crawler_news/spiders/*
-          name: lint
+      # - run:
+      #     command: pylint crawler_news/spiders/*
+      #     name: lint
 
   # TODO
   # deploy-to-gcp:
@@ -36,7 +34,7 @@ workflows:
             branches:
               only:
                 - develop
-                - /circleci-.*/
+                # - /circleci-.*/
       # - deploy-to-gcp:
       #     requires:
       #       - build-and-test
