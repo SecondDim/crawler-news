@@ -39,8 +39,7 @@ workflows:
       - gcp-cli/install_and_initialize_cli:
           requires:
             - build-and-test
-          context: myContext
-          executor: gcp-cli/default
+          executor: gcp-cli/google
           filters:
             branches:
               only:
