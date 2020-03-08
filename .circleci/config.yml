@@ -21,7 +21,6 @@ jobs:
           # command: pylint crawler_news/spiders/*
           name: lint
 
-
   # TODO
   # deploy-to-gcp:
   #   docker:
