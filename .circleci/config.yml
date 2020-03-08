@@ -29,20 +29,14 @@ jobs:
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-          name: Initialize gcloud
-      - run:
-          command: |
             gcloud --quiet beta compute ssh --zone ${GOOGLE_COMPUTE_ZONE} "simple-deploy" --project ${GOOGLE_PROJECT_ID}
-          name: login gcp
-      - run:
-          command: w
-          name: run in next command
-      - run:
-          command: pwd
-          name: pwd
+            pwd
+            docker -v
+            cat .ssh/authorized_keys
+          name: Run gcloud
 
 workflows:
-  build-test:
+  build-test-deploy:
     jobs:
       - build-and-test:
           filters:
