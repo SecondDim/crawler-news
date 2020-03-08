@@ -6,11 +6,14 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: python/default
+    executor: python/default:3.7
     steps:
       - checkout
       - python/load-cache
       - python/install-deps
+      - run:
+          command: which scrapy
+          name: Which scrapy
       - python/save-cache
       - run:
           command: scrapy check
