@@ -39,8 +39,8 @@ workflows:
             branches:
               only:
                 - develop
-                - /feature-.*/
-                - /circleci-.*/
+                - /feature.*/
+                - /circleci.*/
       # - deploy-to-gcp:
       #     requires:
       #       - build-and-test
