@@ -12,17 +12,17 @@ jobs:
     steps:
       - checkout
       - python/load-cache
-      - restore_cache:
-          keys:
-          - scrapy-{{ checksum "requirements.txt"  }}
+      # - restore_cache:
+      #     keys:
+      #     - scrapy-{{ checksum "requirements.txt"  }}
       - python/install-deps
       - python/save-cache
-      - save_cache:
-          key: scrapy-{{ checksum "requirements.txt"  }}
-          paths:
-            - /home/circleci/.local/bin/
+      # - save_cache:
+      #     key: scrapy-{{ checksum "requirements.txt"  }}
+      #     paths:
+      #       - /home/circleci/.local/bin/
       - run:
-          command: scrapy check
+          command: python -m scrapy check
           name: Test scrapy
       # - run:
       #     command: pylint crawler_news/spiders/*
