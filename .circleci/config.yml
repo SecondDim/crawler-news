@@ -6,7 +6,6 @@ orbs:
 
 jobs:
   build-and-test:
-    # executor: python/default
     docker:
       - image: python:3.7-stretch
     steps:
@@ -21,7 +20,6 @@ jobs:
           command: python -m scrapy check
           name: Test scrapy
 
-  # TODO
   # deploy-to-gcp:
   #   docker:
   #     - image: ubuntu
@@ -29,7 +27,7 @@ jobs:
   #     -
 
 workflows:
-  build-test-deploy:
+  build-test:
     jobs:
       - build-and-test:
           filters:
@@ -38,9 +36,25 @@ workflows:
                 - develop
                 - /feature.*/
                 - /circleci.*/
+  deploy:
+    jobs:
+      - install_and_configure_cli:
+          requires:
+            - build-and-test
+          jobs:
+            - gcp-cli/install_and_initialize_cli:
+                context: myContext
+                executor: gcp-cli/default
+          filters:
+            branches:
+              only:
+                - master
+                - /circleci.*/
       # - deploy-to-gcp:
       #     requires:
-      #       - build-and-test
+      #       - install_and_configure_cli
       #     filters:
       #       branches:
-      #         only: master
+      #         only:
+      #           - master
+      #           - /circleci.*/
