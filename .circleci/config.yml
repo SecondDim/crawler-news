@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@0.2.1
+  gcp-cli: circleci/gcp-cli@1.8.4
 
 jobs:
   build-and-test:
@@ -11,9 +12,9 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      # - run:
-      #     command: ./manage.py test
-      #     name: Test
+      - run:
+          command: scrapy check
+          name: Test
 
   # TODO
   # deploy-to-gcp:
