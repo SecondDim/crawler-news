@@ -36,13 +36,11 @@ workflows:
                 - develop
                 - /feature.*/
                 - /circleci.*/
-      - install_and_configure_cli:
+      - gcp-cli/install_and_initialize_cli:
           requires:
             - build-and-test
-          jobs:
-            - gcp-cli/install_and_initialize_cli:
-                context: myContext
-                executor: gcp-cli/default
+          context: myContext
+          executor: gcp-cli/default
           filters:
             branches:
               only:
