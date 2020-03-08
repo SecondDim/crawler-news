@@ -6,7 +6,7 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: python/default:3.7
+    executor: python/default:3.7-stretch
     steps:
       - checkout
       - python/load-cache
