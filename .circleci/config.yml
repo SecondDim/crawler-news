@@ -7,7 +7,7 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: python:3.7-stretch
+      - image: circleci/python:3.7-stretch
     steps:
       - checkout
       - python/load-cache
@@ -30,13 +30,9 @@ jobs:
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
           name: Initialize gcloud
-      - checkout
-      - run:
-          command: pwd
-          name: pwd
       - run:
           command: |
-            gcloud beta compute ssh --zone ${GOOGLE_COMPUTE_ZONE} "simple-deploy" --project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet beta compute ssh --zone ${GOOGLE_COMPUTE_ZONE} "simple-deploy" --project ${GOOGLE_PROJECT_ID}
           name: login gcp
       - run:
           command: w
