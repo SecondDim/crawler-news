@@ -6,27 +6,20 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: python/default
-    # docker:
-    #   - image: python:3.7-stretch
+    # executor: python/default
+    docker:
+      - image: python:3.7-stretch
     steps:
       - checkout
       - python/load-cache
-      # - restore_cache:
-      #     keys:
-      #     - scrapy-{{ checksum "requirements.txt"  }}
       - python/install-deps
       - python/save-cache
-      # - save_cache:
-      #     key: scrapy-{{ checksum "requirements.txt"  }}
-      #     paths:
-      #       - /home/circleci/.local/bin/
+      # - run:
+      #     command: python -m pylint crawler_news/spiders/*
+      #     name: lint
       - run:
           command: python -m scrapy check
           name: Test scrapy
-      # - run:
-      #     command: pylint crawler_news/spiders/*
-      #     name: lint
 
   # TODO
   # deploy-to-gcp:
