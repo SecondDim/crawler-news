@@ -2,6 +2,7 @@ version: '3'
 
 services:
   cassandra:
+    container_name: cassandra
     image: 'cassandra:3.11'
     ports:
       - '7000:7000'
@@ -13,7 +14,8 @@ services:
       - TZ=Asia/Taipei
 
   crawler_news:
-    image: 'crawler_news:latest'
+    container_name: crawler_news
+    build: .
     volumes:
       - './tmp:/src/tmp'
       - './log:/src/log'

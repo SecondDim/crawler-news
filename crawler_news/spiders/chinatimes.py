@@ -56,7 +56,7 @@ class ChinatimesSpider(scrapy.Spider):
     def _parse_authors(self, response):
         authors = response.css('article.article-box div.author>a::text').getall()
         if len(authors) == 0:
-            authors = response.css('article.article-box div.author::text').get(default='').strip()
+            authors = [response.css('article.article-box div.author::text').get(default='').strip()]
         return authors
 
     def _parse_tags(self, response):
