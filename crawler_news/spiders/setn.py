@@ -2,6 +2,7 @@
 
 # mac shell example
 # scrapy crawl setn
+#
 
 import scrapy
 from crawler_news.items import CrawlerNewsItem
