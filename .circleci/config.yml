@@ -21,8 +21,7 @@ jobs:
 
   deploy-to-gcp:
     docker:
-      # - image: google/cloud-sdk
-      - image: docker:19.03.7
+      - image: google/cloud-sdk
     steps:
       - add_ssh_keys:
           fingerprints:
