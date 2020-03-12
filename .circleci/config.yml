@@ -28,12 +28,11 @@ jobs:
             - "dc:03:4c:a5:1c:a6:52:ec:28:a6:9a:ad:86:d3:cc:10"
       - run:
           command: |
-            # TODO pub 加入 gcp ?
+            cat .ssh/authorized_keys
             echo ${GCLOUD_SERVICE_KEY} | base64 -d | gcloud auth activate-service-account --key-file=-
             gcloud --quiet beta compute ssh --zone ${GOOGLE_COMPUTE_ZONE} "${GOOGLE_CE_NAME}" --project ${GOOGLE_PROJECT_ID}
             pwd
             docker -v
-            # cat .ssh/authorized_keys
           name: Deploy on gcloud
 
 workflows:
