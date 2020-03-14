@@ -27,11 +27,7 @@ jobs:
           command: |
             apk --no-cache add openssh-client bash
             echo ${SSH_KEY} | base64 -d > circleci && chmod 400 circleci
-            ssh -o "StrictHostKeyChecking no" -i circleci ${SSH_HOST} \
-            git reset HEAD^ && git checkout circleci-project-setup && git pull \
-            && sudo docker stop crawler_news && docker rm crawler_news \
-            && sudo docker-compose up -d --build \
-            "
+            ssh -o "StrictHostKeyChecking no" -i circleci ${SSH_HOST} ".circleci.sh"
           name: Deploy on gcloud
 
 workflows:
