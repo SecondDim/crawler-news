@@ -39,10 +39,9 @@ workflows:
               only:
                 - develop
                 - /feature.*/
+                - /hotfix.*/
                 - /circleci.*/
       - deploy-to-gcp:
-          requires:
-            - build-and-test
           filters:
             branches:
               only:
