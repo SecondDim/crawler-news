@@ -8,7 +8,7 @@ services:
       - '7000:7000'
       - '9042:9042'
     volumes:
-      - './tmp/cassandra:/var/lib/cassandra'
+      - '/data/cassandra:/var/lib/cassandra'
       # - './docker/cassandra.yaml:/etc/cassandra/cassandra.yaml'
     environment:
       - TZ=Asia/Taipei
@@ -17,8 +17,8 @@ services:
     container_name: crawler_news
     build: .
     volumes:
-      - './tmp:/src/tmp'
-      - './log:/src/log'
+      - '/data/tmp:/src/tmp'
+      - '/data/log:/src/log'
     depends_on:
       - 'cassandra'
     links:
