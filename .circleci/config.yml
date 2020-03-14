@@ -25,18 +25,17 @@ jobs:
       - image: alpine:latest
     steps:
       - run:
-          command: apk --no-cache add openssh-client bash
-          name: install ssh
-      - add_ssh_keys:
-          fingerprints:
-            - 29:ee:cb:af:99:a3:aa:c8:7f:e6:73:97:20:4f:64:a0
-      - run:
           command: |
+            apk --no-cache add openssh-client bash
+            echo ${SSH_KEY} | base64 -d > circle.pem
+            ls
+            ssh -i circle.pem ${SSH_HOST}
             pwd
             ls
-            ssh circleci@35.189.176.104
-            pwd
             docker -v
+            git reset HEAD^ && git checkout master && git pull
+            # docker stop crawler_news && docker rm crawler_news
+            # docker-compose up -d --build
           name: Deploy on gcloud
 
 workflows:
