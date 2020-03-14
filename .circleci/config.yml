@@ -21,17 +21,20 @@ jobs:
 
   deploy-to-gcp:
     docker:
-      - image: google/cloud-sdk
+      # - image: google/cloud-sdk
+      - image: alpine:latest
     steps:
+      - run:
+          command: apk --no-cache add openssh-client bash
+          name: install ssh
       - add_ssh_keys:
           fingerprints:
-            - "dc:03:4c:a5:1c:a6:52:ec:28:a6:9a:ad:86:d3:cc:10"
+            - 29:ee:cb:af:99:a3:aa:c8:7f:e6:73:97:20:4f:64:a0
       - run:
           command: |
             pwd
             ls
-            echo ${GCLOUD_SERVICE_KEY} | base64 -d | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet beta compute ssh --zone ${GOOGLE_COMPUTE_ZONE} "${GOOGLE_CE_NAME}" --project ${GOOGLE_PROJECT_ID}
+            ssh circleci@35.189.176.104
             pwd
             docker -v
           name: Deploy on gcloud
