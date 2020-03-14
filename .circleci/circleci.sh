@@ -1,4 +1,5 @@
 cd /home/ubuntu/crawler-news
-git reset HEAD^ && git checkout $1 && git pull
+git checkout . && git checkout $1 && git pull
+mv .circleci/docker-compose.yml docker-compose.yml
 sudo docker stop crawler_news && docker rm crawler_news
-sudo docker-compose -f .circleci/docker-compose.yml up -d --build
+sudo docker-compose up -d --build
