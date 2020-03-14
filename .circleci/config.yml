@@ -21,21 +21,16 @@ jobs:
 
   deploy-to-gcp:
     docker:
-      # - image: google/cloud-sdk
       - image: alpine:latest
     steps:
       - run:
           command: |
             apk --no-cache add openssh-client bash
-            echo ${SSH_KEY} | base64 -d > circle.pem
-            ls
-            ssh -i circle.pem ${SSH_HOST}
-            pwd
-            ls
-            docker -v
-            git reset HEAD^ && git checkout master && git pull
-            # docker stop crawler_news && docker rm crawler_news
-            # docker-compose up -d --build
+            echo ${SSH_KEY} | base64 -d > circleci && chmod 400 circleci
+            ssh -o "StrictHostKeyChecking no" -i circleci ${SSH_HOST}
+            git reset HEAD^ && git checkout circleci-project-setup && git pull
+            sudo docker stop crawler_news && docker rm crawler_news
+            sudo docker-compose up -d --build
           name: Deploy on gcloud
 
 workflows:
