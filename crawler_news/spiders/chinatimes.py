@@ -14,10 +14,10 @@ class ChinatimesSpider(scrapy.Spider):
     allowed_domains = ['chinatimes.com']
     base_url = 'https://www.chinatimes.com'
 
+    date_str = str(time.strftime("%F", time.localtime()))
+
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
-        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG',
+        'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
@@ -54,7 +54,10 @@ class ChinatimesSpider(scrapy.Spider):
         return response.css('article.article-box time::attr(datetime)').get()
 
     def _parse_authors(self, response):
-        return response.css('article.article-box div.author>a::text').getall()
+        authors = response.css('article.article-box div.author>a::text').getall()
+        if len(authors) == 0:
+            authors = [response.css('article.article-box div.author::text').get(default='').strip()]
+        return authors
 
     def _parse_tags(self, response):
         return response.css('article.article-box div.article-hash-tag a::text').getall()

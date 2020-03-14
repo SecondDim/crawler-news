@@ -11,15 +11,15 @@ from crawler_news.items import CrawlerNewsItem
 import time
 import re
 
-class LibertyTimesSpider(scrapy.Spider):
+date_str = str(time.strftime("%F", time.localtime()))
+
+class LibertytimesSpider(scrapy.Spider):
     name = 'libertytimes'
     allowed_domains = ['ltn.com.tw']
     base_url = 'https://news.ltn.com.tw'
 
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
-        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG',
+        'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
@@ -54,22 +54,23 @@ class LibertyTimesSpider(scrapy.Spider):
         return response.css('h1::text').get()
 
     def _parse_publish_date(self, response):
-        if re.match('https://sports', response.url):
-            return response.css('div.c_time::text').get()
-        elif re.match('https://partners', response.url):
-            return response.css('article span::text').re_first(r'[0-9-]+ [0-9:]+')
-        elif response.css('div.text>span.time::text').get() != None:
-            return response.css('div.text>span.time::text').get().strip()
-        else:
-            return ''
+        publish_date = response.css('div.content *::text').re_first(r'[0-9/-]+[\s]+[0-9:]+', default='').strip()
+
+        if re.match('https://news', response.url):
+            publish_date = response.css('div.whitecon span.time::text').get(default='').strip()
+        elif re.match('https://sports', response.url):
+            publish_date = response.css('div.c_time::text').get(default='').strip()
+        elif re.match('https://istyle', response.url):
+            publish_date = response.css('div.label-date::text').get(default='').strip()
+        elif re.match('https://ent', response.url):
+            publish_date = response.css('div.content div.date::text').get(default='').strip()
+        elif re.match('https://auto', response.url):
+            publish_date = response.css('div.con_writer span.h1dt::text').get(default='').strip()
+
+        return publish_date
 
     def _parse_authors(self, response):
-        if re.match('https://sports', response.url):
-            return [response.css('article *::text').re_first(r'記者.*報導',default='')]
-        elif re.match('https://partners', response.url):
-            return [response.css('article span::text').re_first(r'[0-9-]+ [0-9:]+',default='')]
-        else:
-            return [response.css('div.text>p *::text').re_first(r'記者.*報導',default='')]
+        return [response.css('div.content *::text').re_first(r'[\[〔［].+[／].+[］〕\]]',default='')]
 
     def _parse_tags(self, response):
         # no tags
@@ -78,29 +79,41 @@ class LibertyTimesSpider(scrapy.Spider):
     def _parse_text(self, response):
         if re.match('https://sports', response.url):
             return response.css('div.news_p p *::text').getall()
+        elif re.match('https://ent', response.url):
+            return response.css('div.news_content p *::text').getall()
         else:
             return response.css('div.text>p *::text').getall()
 
     def _parse_text_html(self, response):
         if re.match('https://sports', response.url):
-            return response.css('div.news_p *').get()
+            return response.css('div.news_p').get()
+        elif re.match('https://ent', response.url):
+            return response.css('div.news_content').get()
         else:
             return response.css('div.text').get()
 
     def _parse_images(self, response):
         if re.match('https://sports', response.url):
             return response.css('div.news_p').css('img::attr(src)').getall()
+        elif re.match('https://ent', response.url):
+            return response.css('div.news_content').css('img::attr(data-original)').getall()
         else:
             return response.css('div.text').css('img::attr(src)').getall()
 
 
     def _parse_video(self, response):
-        # TODO
-        return []
+        if re.match('https://sports', response.url):
+            return response.css('div.news_p').css('iframe::attr(src)').getall()
+        elif re.match('https://ent', response.url):
+            return response.css('div.news_content').css('iframe::attr(src)').getall()
+        else:
+            return response.css('div.text').css('iframe::attr(src)').getall()
 
     def _parse_links(self, response):
         if re.match('https://sports', response.url):
             return response.css('div.news_p').css('a::attr(href)').getall()
+        elif re.match('https://ent', response.url):
+            return response.css('div.news_content').css('a::attr(href)').getall()
         else:
             return response.css('div.text').css('a::attr(href)').getall()
 

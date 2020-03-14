@@ -14,10 +14,10 @@ class EttodaySpider(scrapy.Spider):
     allowed_domains = ['ettoday.net']
     base_url = 'https://www.ettoday.net'
 
+    date_str = str(time.strftime("%F", time.localtime()))
+
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
-        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG',
+        'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
@@ -53,13 +53,23 @@ class EttodaySpider(scrapy.Spider):
         return item
 
     def _parse_title(self, response):
-        return response.css('h1.title::text').get()
+        if re.match('https://fashion.', response.url):
+            return response.css('h1.title_article::text').get()
+        else:
+            return response.css('h1.title::text').get()
 
     def _parse_publish_date(self, response):
-        return response.css('time.date::text').get().strip()
+        if re.match('https://pets.', response.url):
+            return response.css('time.news-time::text').get(default='').strip()
+        else:
+            return response.css('time.date::text').get(default='').strip()
 
     def _parse_authors(self, response):
-        return [response.css('div.story>p *::text').re_first(r'記者.*報導', default='')]
+        authors = response.css('div.story>p *::text')
+        if authors.re_first(r'(^[^▲▼（\s]*／[^）\s]*)') != None:
+            return [authors.re_first(r'(^[^▲▼（\s]*／[^）\s]*)')]
+        elif authors.re_first(r'(^.+\/.+)') != None:
+            return [authors.re_first(r'(^.+\/.+)')]
 
     def _parse_tags(self, response):
         news_tags = []
@@ -95,8 +105,7 @@ class EttodaySpider(scrapy.Spider):
         return response.css('div.story').css('img::attr(src)').getall()
 
     def _parse_video(self, response):
-        # TODO
-        return []
+        return response.css('div.story iframe::attr(src)').getall()
 
     def _parse_links(self, response):
         return response.css('div.story').css('a::attr(href)').getall()

@@ -14,10 +14,10 @@ class EBCSpider(scrapy.Spider):
     allowed_domains = ['news.ebc.net.tw']
     base_url = 'https://news.ebc.net.tw'
 
+    date_str = str(time.strftime("%F", time.localtime()))
+
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
-        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG',
+        'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):

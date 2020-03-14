@@ -4,30 +4,30 @@ https://github.com/codelucas/newspaper
 pip3 install newspaper3k
 '''
 
-from newspaper import Article
-
 import sys
 
+from newspaper import Article
+
 try:
-    url = sys.argv[1]
+    URL = sys.argv[1]
 except IndexError:
     print('[X] please enter url')
     sys.exit(0)
 
-print('[*] url: %s' % url)
+print('[*] url: %s' % URL)
 
 print('[F] ----- download & parse -----')
-article = Article(url, language='zh')
-article.download()
-article.parse()
+ARTICLE = Article(URL, language='zh')
+ARTICLE.download()
+ARTICLE.parse()
 
-print('[*] authors: %s' % article.authors)
-print('[*] publish_date: %s' % article.publish_date)
-print('[*] text: %s' % article.text)
-print('[*] top_image: %s' % article.top_image)
-print('[*] movies: %s' % article.movies)
+print('[*] authors: %s' % ARTICLE.authors)
+print('[*] publish_date: %s' % ARTICLE.publish_date)
+print('[*] text: %s' % ARTICLE.text)
+print('[*] top_image: %s' % ARTICLE.top_image)
+print('[*] movies: %s' % ARTICLE.movies)
 
-article.nlp()
+ARTICLE.nlp()
 print('[F] ----- article.nlp() -----')
-print('[*] keywords: %s' % article.keywords)
-print('[*] summary: %s' % article.summary)
+print('[*] keywords: %s' % ARTICLE.keywords)
+print('[*] summary: %s' % ARTICLE.summary)

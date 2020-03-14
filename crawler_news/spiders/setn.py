@@ -14,10 +14,10 @@ class SetnSpider(scrapy.Spider):
     allowed_domains = ['setn.com']
     base_url = 'https://www.setn.com'
 
+    date_str = str(time.strftime("%F", time.localtime()))
+
     custom_settings = {
-        'DOWNLOAD_DELAY': 1,
-        'LOG_FILE': 'log/%s-%s.log' % (name, str(int(time.time()))),
-        'LOG_LEVEL': 'DEBUG',
+        'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
@@ -63,7 +63,12 @@ class SetnSpider(scrapy.Spider):
         if re.match('https://www.setn.com/e', response.url):
             return [response.css('div.Content2>p::text').get()]
         else:
-            return [response.css('div#Content1>p::text').get()]
+            authors = response.css('div#Content1>p::text').get()
+
+            if re.match(r'.+[／].+', authors) == None:
+                return [response.css('div.page-title-text span::text').get()]
+            else:
+                return [authors]
 
     def _parse_tags(self, response):
         return response.css('div.page-keyword-area ul>li>a>strong::text').getall()

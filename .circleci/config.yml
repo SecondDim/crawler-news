@@ -1,0 +1,49 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/python:3.7-stretch
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+      # - run:
+      #     command: python -m pylint crawler_news/spiders/*
+      #     name: lint
+      - run:
+          command: python -m scrapy check
+          name: Test scrapy
+
+  deploy-to-gcp:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run:
+          command: |
+            apk --no-cache add openssh-client bash
+            echo ${SSH_KEY} | base64 -d > circleci && chmod 400 circleci
+            ssh -o "StrictHostKeyChecking no" -i circleci ${SSH_HOST} "./circleci.sh master"
+          name: Deploy on gcloud
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              only:
+                - develop
+                - /feature.*/
+                - /circleci.*/
+      - deploy-to-gcp:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only:
+                - master

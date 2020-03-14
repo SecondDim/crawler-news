@@ -1,3 +1,4 @@
+sleep 60
 while :
 do
     spiders=$(scrapy list)

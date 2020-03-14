@@ -89,11 +89,11 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DOWNLOAD_DELAY=0
+DOWNLOAD_DELAY=5
 
 LOG_FILE='log/scrapy.log'
-LOG_LEVEL='DEBUG' # DEBUG # WARNING # ERROR # CRITICAL
+LOG_LEVEL='WARNING' # ERROR # CRITICAL
 
-CASSANDRA_HOST = ['localhost'] # localhost
-CASSANDRA_KEYSPAC = 'test'
-CASSANDRA_TABLE = 'test'
+CASSANDRA_HOST = ['cassandra'] # localhost
+CASSANDRA_KEYSPAC = 'develop_crawler_news'
+CASSANDRA_TABLE = 'crawler_news'
