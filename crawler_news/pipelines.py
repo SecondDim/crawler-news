@@ -42,10 +42,10 @@ class CassandraPipeline(object):
                 try:
                     self.db.insert(dict(item))
                 except Exception as e:
-                    print("========== DB ERROR ==========")
-                    print(e)
-                    print(item)
-                    print("------------------------------")
+                    spider.logger.error("---------- DB ERROR ----------")
+                    spider.logger.error(e)
+                    spider.logger.error(item)
+                    spider.logger.error("==============================")
             else:
                 # TODO version2 版本判斷
                 pass
