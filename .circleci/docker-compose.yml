@@ -4,6 +4,7 @@ services:
   cassandra:
     container_name: cassandra
     image: 'cassandra:3.11'
+    restart: always
     ports:
       - '7000:7000'
       - '9042:9042'
@@ -16,6 +17,7 @@ services:
   crawler_news:
     container_name: crawler_news
     build: .
+    restart: always
     volumes:
       - '/data/tmp:/src/tmp'
       - '/data/log:/src/log'
