@@ -7,7 +7,7 @@ do
         if [ "${spider}" == "localhost" ]; then
             continue
         fi
-        echo "[+] ${spider}"
+        echo "[+] [$(date +"%Y-%m-%d %H:%M:%S")] ${spider}"
         scrapy crawl $spider
     done
     echo '[*] Done.wait 5 second'
