@@ -14,10 +14,10 @@ class CrawlerNewsItem(scrapy.Item):
     article_type = scrapy.Field() # str
     title = scrapy.Field() # str
     publish_date = scrapy.Field() # str
-    authors = scrapy.Field() # list
-    tags = scrapy.Field() # list
-    text = scrapy.Field() # list
+    authors = scrapy.Field() # list json
+    tags = scrapy.Field() # list json
+    text = scrapy.Field() # list json
     text_html = scrapy.Field() # str
-    images = scrapy.Field() # list
-    video = scrapy.Field() # list
-    links = scrapy.Field() # list
+    images = scrapy.Field() # list json
+    video = scrapy.Field() # list json
+    links = scrapy.Field() # list json

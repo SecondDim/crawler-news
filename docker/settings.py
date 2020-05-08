@@ -97,3 +97,10 @@ LOG_LEVEL='WARNING' # ERROR # CRITICAL
 CASSANDRA_HOST = ['cassandra'] # localhost
 CASSANDRA_KEYSPAC = 'develop_crawler_news'
 CASSANDRA_TABLE = 'crawler_news'
+
+MYSQL_HOST = 'mysql'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '@qweasdzxc'
+MYSQL_DB = 'develop_crawler_news'
+MYSQL_TABLE = 'crawler_news'
+MYSQL_CHARSET = 'utf8mb4'
