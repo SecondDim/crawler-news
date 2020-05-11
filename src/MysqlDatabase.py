@@ -11,8 +11,8 @@ class MysqlDatabase():
         self.connect()
 
     def __del__(self,):
-        # TODO if not close
-        self.connection.close()
+        if self.connection.open:
+            self.connection.close()
 
     def connect(self,):
         self.connection = pymysql.connect(
@@ -20,6 +20,7 @@ class MysqlDatabase():
             charset=self.charset, cursorclass=pymysql.cursors.DictCursor)
 
         self.create_db()
+        self.connection.select_db(self.database)
         self.create_table()
 
     def close(self,):
@@ -48,7 +49,9 @@ class MysqlDatabase():
             self.query(sql)
 
     def create_table(self,):
-        sql = """
+        sql = "SHOW TABLES LIKE '%s';" % self.table
+        if self.fetch_one(sql) is None:
+            sql = """
                 CREATE TABLE IF NOT EXISTS `%s`.`%s` (
                     `id` serial NOT NULL AUTO_INCREMENT,
                     `url` varchar(255) NOT NULL,
@@ -75,9 +78,9 @@ class MysqlDatabase():
                     INDEX USING BTREE (updated_at),
                     INDEX USING BTREE (deleted_at)
                     ) ENGINE=InnoDB;
-            """
+                """
 
-        self.execute(sql % (self.database, self.table))
+            self.execute(sql % (self.database, self.table))
 
     def news_exist(self, url):
         sql = "SELECT * FROM %s.%s WHERE url='%s';"
