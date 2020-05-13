@@ -1,8 +1,9 @@
 import pymysql.cursors
 
 class MysqlDatabase():
-    def __init__(self, host, user, password, db, table='test', charset='utf8mb4'):
+    def __init__(self, host, port, user, password, db, table='test', charset='utf8mb4'):
         self.host = host
+        self.port = int(port)
         self.user = user
         self.password = password
         self.database = db
@@ -16,7 +17,7 @@ class MysqlDatabase():
 
     def connect(self,):
         self.connection = pymysql.connect(
-            host=self.host, user=self.user, password=self.password,
+            host=self.host, port=self.port, user=self.user, password=self.password,
             charset=self.charset, cursorclass=pymysql.cursors.DictCursor)
 
         self.create_db()
