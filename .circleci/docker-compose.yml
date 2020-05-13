@@ -1,32 +1,28 @@
 version: '3'
 
 services:
-  cassandra:
-    container_name: cassandra
-    image: 'cassandra:3.11'
-    restart: always
+  mysql:
+    container_name: mysql
+    image: 'mysql:8.0.19'
     ports:
-      - '7000:7000'
-      - '9042:9042'
+      - '3306:3306'
     volumes:
-      - '/data/cassandra:/var/lib/cassandra'
-      # - './docker/cassandra.yaml:/etc/cassandra/cassandra.yaml'
+      - './tmp/mysql:/var/lib/mysql'
+      # - './docker/mysql/conf.d:/etc/mysql/conf.d'
     environment:
+      - MYSQL_ROOT_PASSWORD=1234567890
       - TZ=Asia/Taipei
+    restart: always
 
   crawler_news:
     container_name: crawler_news
     build: .
-    restart: always
     volumes:
-      - '/data/tmp:/src/tmp'
-      - '/data/log:/src/log'
+      - './tmp:/src/tmp'
+      - './log:/src/log'
     depends_on:
-      - 'cassandra'
+      - 'mysql'
     links:
-      - 'cassandra'
+      - 'mysql'
     environment:
       - TZ=Asia/Taipei
-
-
-

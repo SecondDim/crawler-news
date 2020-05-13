@@ -65,7 +65,8 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-  'crawler_news.pipelines.CassandraPipeline': 300,
+  # 'crawler_news.pipelines.cassandra.CassandraPipeline': 300,
+  'crawler_news.pipelines.mysql.MysqlPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -89,11 +90,19 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DOWNLOAD_DELAY=0
+DOWNLOAD_DELAY = 0
 
-LOG_FILE='log/scrapy.log'
-LOG_LEVEL='DEBUG' # DEBUG # WARNING # ERROR # CRITICAL
+# LOG_FILE = 'log/scrapy.log'
+LOG_LEVEL = 'WARNING' # DEBUG # WARNING # ERROR # CRITICAL
 
 CASSANDRA_HOST = ['localhost'] # localhost
 CASSANDRA_KEYSPAC = 'test'
 CASSANDRA_TABLE = 'test'
+
+MYSQL_HOST = 'localhost'
+MYSQL_PORT = 3306
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '1234567890'
+MYSQL_DB = 'test'
+MYSQL_TABLE = 'test'
+MYSQL_CHARSET = 'utf8mb4'
