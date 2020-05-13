@@ -1,4 +1,4 @@
-sleep 60
+sleep 10
 while :
 do
     spiders=$(scrapy list)
@@ -10,7 +10,7 @@ do
         echo "[+] [$(date +"%Y-%m-%d %H:%M:%S")] ${spider}"
         scrapy crawl $spider
     done
-    echo '[*] Done.wait 5 second'
-    sleep 5
+    echo '[*] Done.wait 300 second'
+    sleep 300
 done
 
