@@ -31,12 +31,12 @@ class MysqlPipeline(object):
         if not self.db.news_exist(item['url']):
             # TODO 塞進資料庫前，檢查資料格式
 
-            item['authors'] = json.dumps(item.get('authors', []))
-            item['tags'] = json.dumps(item.get('tags', []))
-            item['text'] = json.dumps(item.get('text', []))
-            item['images'] = json.dumps(item.get('images', []))
-            item['video'] = json.dumps(item.get('video', []))
-            item['links'] = json.dumps(item.get('links', []))
+            item['authors'] = json.dumps(item.get('authors', []), ensure_ascii=False, default=None)
+            item['tags'] = json.dumps(item.get('tags', []), ensure_ascii=False, default=None)
+            item['text'] = json.dumps(item.get('text', []), ensure_ascii=False, default=None)
+            item['images'] = json.dumps(item.get('images', []), ensure_ascii=False, default=None)
+            item['video'] = json.dumps(item.get('video', []), ensure_ascii=False, default=None)
+            item['links'] = json.dumps(item.get('links', []), ensure_ascii=False, default=None)
 
             try:
                 self.db.insert(dict(item))
