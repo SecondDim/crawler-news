@@ -24,6 +24,12 @@ class MysqlPipeline(object):
     def close_spider(self, spider):
         self.db.close()
 
+    def _json_dumps_item(self, item, key):
+        if item.get(key):
+            return json.dumps(item.get(key), ensure_ascii=False)
+        else:
+            return None
+
     def process_item(self, item, spider):
         if not item.get('url'):
             raise DropItem("Missing item.url in %s" % item)
@@ -31,12 +37,12 @@ class MysqlPipeline(object):
         if not self.db.news_exist(item['url']):
             # TODO 塞進資料庫前，檢查資料格式
 
-            item['authors'] = json.dumps(item.get('authors', []), ensure_ascii=False, default=None)
-            item['tags'] = json.dumps(item.get('tags', []), ensure_ascii=False, default=None)
-            item['text'] = json.dumps(item.get('text', []), ensure_ascii=False, default=None)
-            item['images'] = json.dumps(item.get('images', []), ensure_ascii=False, default=None)
-            item['video'] = json.dumps(item.get('video', []), ensure_ascii=False, default=None)
-            item['links'] = json.dumps(item.get('links', []), ensure_ascii=False, default=None)
+            item['authors'] = self._json_dumps_item(item, 'authors')
+            item['tags'] = self._json_dumps_item(item, 'tags')
+            item['text'] = self._json_dumps_item(item, 'text')
+            item['images'] = self._json_dumps_item(item, 'images')
+            item['video'] = self._json_dumps_item(item, 'video')
+            item['links'] = self._json_dumps_item(item, 'links')
 
             try:
                 self.db.insert(dict(item))
