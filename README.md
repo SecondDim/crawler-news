@@ -120,6 +120,22 @@ start cassandra
     # start on backgroud
 ```
 
+### Install Mysql Database
+
+mac os
+
+```bash
+    brew install mysql
+```
+
+python extension
+
+```bash
+    pip install PyMySQL
+    # or
+    pip3 install PyMySQL
+```
+
 ## RUN Project
 
 ### Run all in localhost terminal
