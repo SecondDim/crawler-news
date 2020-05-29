@@ -6,9 +6,7 @@ Use python scrapy build crawler for real-time Taiwan NEWS website.
 
 ## TODO LIST
 
-- 整理 carssadra 權限，叢集變成 N=3
 - 用成 k8s 部到 GKC，或是 VM 即可？
-- 統一每隻爬蟲的 setting，分成 production & develop
 - 實作多執行緒，同步爬蟲執行，使用 python script
 - 可以考慮實作 docker install shell
 - 持續修改 Bug
