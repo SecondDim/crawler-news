@@ -30,7 +30,7 @@ class MysqlPipeline(object):
         else:
             return None
 
-    def process_item(self, item, spider):
+    async def process_item(self, item, spider):
         if not item.get('url'):
             raise DropItem("Missing item.url in %s" % item)
 
