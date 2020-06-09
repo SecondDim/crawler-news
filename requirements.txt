@@ -3,3 +3,4 @@ cassandra-driver==3.21.0
 pylint==2.4.4
 PyMySQL==0.9.3
 redis==3.5.3
+requests==2.22.0
