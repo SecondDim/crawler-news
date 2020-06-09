@@ -17,7 +17,10 @@ class LineNotifyPipeline(object):
     def open_spider(self, spider):
         settings = spider.settings
         self.token = settings['LINE_NOTIFY_TOKEN']
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
+        self.redis = redis.Redis(
+                        host=settings['REDIS_HOST'],
+                        port=settings['REDIS_PORT'],
+                        db=settings['REDIS_DATABASE'])
 
     def close_spider(self, spider):
         pass
