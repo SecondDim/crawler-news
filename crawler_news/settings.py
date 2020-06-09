@@ -67,6 +67,7 @@ DEFAULT_REQUEST_HEADERS = {
 ITEM_PIPELINES = {
   # 'crawler_news.pipelines.cassandra.CassandraPipeline': 300,
   'crawler_news.pipelines.mysql.MysqlPipeline': 300,
+  'crawler_news.pipelines.line.LineNotifyPipeline': 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -102,7 +103,9 @@ CASSANDRA_TABLE = 'test'
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = '1234567890'
+MYSQL_PASSWORD = '@qweasdzxc'
 MYSQL_DB = 'test'
 MYSQL_TABLE = 'test'
 MYSQL_CHARSET = 'utf8mb4'
+
+LINE_NOTIFY_TOKEN = ''

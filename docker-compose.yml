@@ -13,11 +13,20 @@ services:
   #   environment:
   #     - TZ=Asia/Taipei
 
+  redis:
+    container_name: redis
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+    environment:
+      - TZ=Asia/Taipei
+    restart: always
+
   mysql:
     container_name: mysql
     image: 'mysql:8.0.19'
     ports:
-      - '13306:3306'
+      - '3306:3306'
     volumes:
       - './tmp/mysql:/var/lib/mysql'
       # - './docker/mysql/conf.d:/etc/mysql/conf.d'
@@ -42,9 +51,11 @@ services:
       - './log:/src/log'
     depends_on:
       - 'mysql'
+      - 'redis'
       # - 'cassandra'
     links:
       - 'mysql'
+      - 'redis'
       # - 'cassandra'
     environment:
       - TZ=Asia/Taipei

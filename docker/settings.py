@@ -106,3 +106,5 @@ MYSQL_PASSWORD = '1234567890'
 MYSQL_DB = 'develop_crawler_news'
 MYSQL_TABLE = 'crawler_news'
 MYSQL_CHARSET = 'utf8mb4'
+
+LINE_NOTIFY_TOKEN = ''
