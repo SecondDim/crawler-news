@@ -6,6 +6,9 @@ Use python scrapy build crawler for real-time Taiwan NEWS website.
 
 ## TODO LIST
 
+- 整理 setting 與 cicd
+- 部署 line notify
+
 - 用成 k8s 部到 GKC，或是 VM 即可？
 - 實作多執行緒，同步爬蟲執行，使用 python script
 - 可以考慮實作 docker install shell
@@ -82,6 +85,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
 ### Develop Env
 
 - python 3.7.6
+- scrapy >= 2.0.0
 - Cassandra 3.11.4
 - Develop on macOS (main)
 

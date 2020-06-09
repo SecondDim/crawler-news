@@ -16,7 +16,9 @@ jobs:
       #     command: python -m pylint crawler_news/spiders/*
       #     name: lint
       - run:
-          command: python -m scrapy check
+          command: |
+            mv crawler_news/settings.py.example crawler_news/settings.py
+            python -m scrapy check
           name: Test scrapy
 
   deploy-to-gcp:
