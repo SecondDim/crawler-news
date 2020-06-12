@@ -29,7 +29,7 @@ jobs:
           command: |
             apk --no-cache add openssh-client bash
             echo ${SSH_KEY} | base64 -d > circleci && chmod 400 circleci
-            ssh -o "StrictHostKeyChecking no" -i circleci ${SSH_HOST} "cp /home/ubuntu/crawler-news/.circleci/circleci.sh /home/ubuntu/circleci.sh && chmod +x /home/ubuntu/circleci.sh && ./circleci.sh master"
+            ssh -o "StrictHostKeyChecking no" -i circleci ${SSH_HOST} "cd /home/ubuntu/ProjectPM/projectpm-cicd && ./circleci.sh crawler-news master"
           name: Deploy on gcloud
 
 workflows:
