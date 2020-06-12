@@ -6,7 +6,7 @@ COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
-RUN mv docker/settings.py crawler_news/ && mkdir log && mkdir tmp
+RUN mkdir log && mkdir tmp
 
 CMD ["/bin/bash", "run_spiders.sh"]
 

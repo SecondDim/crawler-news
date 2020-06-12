@@ -29,11 +29,12 @@ class LineNotifyPipeline(object):
         if type(targets) is str:
             targets = [targets]
 
-        for target in targets:
-            for key_word in key_words:
-                match = re.search(key_word, target)
-                if match:
-                    return match.group(0)
+        if type(targets) is list:
+            for target in targets:
+                for key_word in key_words:
+                    match = re.search(key_word, target)
+                    if match:
+                        return match.group(0)
 
         return False
 
@@ -55,7 +56,7 @@ class LineNotifyPipeline(object):
         if self.redis.get(item.get('url')):
             return item
 
-        # self.redis.set('key_words', json.dumps(['區塊鏈', '國泰金'], ensure_ascii=False))
+        # self.redis.set('key_words', json.dumps(['Hello world!'], ensure_ascii=False))
 
         key_words = json.loads(self.redis.get('key_words'))
 
