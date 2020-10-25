@@ -51,7 +51,7 @@ class CnaSpider(scrapy.Spider):
         return item
 
     def _parse_title(self, response):
-        return response.css('article.article h1::text').get()
+        return response.css('article.article h1 *::text').get()
 
     def _parse_publish_date(self, response):
         return response.css('article.article div.timeBox span::text').get()
