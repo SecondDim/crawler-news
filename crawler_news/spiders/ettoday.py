@@ -61,6 +61,8 @@ class EttodaySpider(scrapy.Spider):
     def _parse_publish_date(self, response):
         if re.match('https://pets.', response.url):
             return response.css('time.news-time::text').get(default='').strip()
+        if re.match('https://pets.', response.url):
+            return response.css('.subject_article h1::text').get(default='').strip()
         else:
             return response.css('time.date::text').get(default='').strip()
 
