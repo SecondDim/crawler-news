@@ -1,4 +1,4 @@
-Scrapy==2.1.0
+Scrapy==2.5.1
 cassandra-driver==3.21.0
 pylint==2.4.4
 PyMySQL==0.9.3
