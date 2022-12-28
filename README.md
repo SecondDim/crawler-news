@@ -21,42 +21,61 @@ Use python scrapy build crawler for real-time Taiwan NEWS website.
 
 List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%B6%B2%E8%B7%AF%E6%96%B0%E8%81%9E%E5%AA%92%E9%AB%94%E6%B5%81%E9%87%8F%E6%8E%92%E5%90%8D-2018-01/)
 
-1. [ettoday](https://www.ettoday.net/)
-    - Can be optimized
+[update 2022/3] [Alexa台灣排名](https://www.prlass.com/4941/%E5%8F%B0%E7%81%A3%E5%AA%92%E9%AB%94%E6%8E%92%E5%90%8D2022%E5%B9%B43%E6%9C%88/)
+
+`! Alexa停止營運了，之後再看看要換成什麼`
+
 1. [自由時報](https://www.ltn.com.tw/)
-    - Can be optimized
-1. [TVBS](https://news.tvbs.com.tw/)
-    - Can be optimized
-1. [三立新聞網](https://www.setn.com/)
-    - Can be optimized
-1. [FIX] [東森新聞](https://news.ebc.net.tw/)
+    - [2022/12] 尚未檢查
+1. [東森新聞](https://news.ebc.net.tw/)
+    - [2022/12] 尚未檢查
     - Few special case articles no use p tag
     - Few special case articles video not in main span tag
-1. [Test] [聯合新聞網](https://udn.com/news/index)
+1. [聯合新聞網](https://udn.com/news/index)
+    - [2022/12] 尚未檢查
     - Can be optimized
-1. [Pending] [頻果新聞網](https://tw.appledaily.com/home)
+1. [今日新聞](https://www.nownews.com/)
+    - [2022/12] 尚未檢查
+    - ajax.
+    - Can be optimized
+1. [ettoday](https://www.ettoday.net/)
+    - [2022/12] 尚未檢查
+1. [NEW] [巴哈姆特電玩資訊站](https://gnn.gamer.com.tw/)
+    - TODO
+1. [風傳媒](https://www.storm.mg/)
+    - TODO
+1. [公司還在嗎?] [頻果新聞網](https://tw.appledaily.com/home)
+    - [2022/12] 尚未檢查
     - 要使用 javascript
     - 不能用 cookie,session
     - 新聞整體格式非主流，例：文章時間
-1. [TODO] [風傳媒](https://www.storm.mg/)
-1. [今日新聞](https://www.nownews.com/)
-    - ajax.
-    - Can be optimized
-1. [TODO] [商業週刊](https://www.businessweekly.com.tw/)
-    - Non-instant news
-    - Mostly for business news
 1. [中時電子報](https://www.chinatimes.com/)
+    - [2022/12] 尚未檢查
     - Can be optimized
-1. [TODO] [大紀元](https://www.epochtimes.com/)
-    - Political position is too biased.
-1. [中央通訊社](https://www.cna.com.tw/)
-    - Can be optimized
-1. [TODO] [關鍵評論網](https://www.thenewslens.com/)
-    - Non-instant news
-1. [TODO] [今周刊](https://www.businesstoday.com.tw/)
+1. [今周刊](https://www.businesstoday.com.tw/)
+    - [2022/12] 尚未檢查
     - Maybe need javascript
     - Non-instant news
     - Mostly for business news
+1. [TVBS](https://news.tvbs.com.tw/)
+    - [2022/12] 尚未檢查
+    - Can be optimized
+1. [商業週刊](https://www.businessweekly.com.tw/)
+    - [2022/12] 尚未檢查
+    - Non-instant news
+    - Mostly for business news
+1. [三立新聞網](https://www.setn.com/)
+    - [2022/12] 尚未檢查
+    - Can be optimized
+1. [NEW] [民視新聞](https://www.ftvnews.com.tw/)
+    - [2022/12] 尚未檢查
+1. [中央通訊社](https://www.cna.com.tw/)
+    - [2022/12] 尚未檢查
+    - Can be optimized
+1. [關鍵評論網](https://www.thenewslens.com/)
+    - [2022/12] 尚未檢查
+    - Non-instant news
+
 
 ## Crawler step
 
