@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Define here the models for your spider middleware
 #
 # See documentation in:
@@ -7,20 +5,27 @@
 
 from scrapy import signals
 
+# useful for handling different item types with a single interface
+from itemadapter import is_item, ItemAdapter
 
-class CrawlerNewsSpiderMiddleware(object):
+
+class CrawlerNewsSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
 
     @classmethod
     def from_crawler(cls, crawler):
+        print('[middleware] CrawlerNewsSpiderMiddleware from_crawler')
+
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
     def process_spider_input(self, response, spider):
+        print('[middleware] CrawlerNewsSpiderMiddleware process_spider_input')
+
         # Called for each response that goes through the spider
         # middleware and into the spider.
 
@@ -28,22 +33,27 @@ class CrawlerNewsSpiderMiddleware(object):
         return None
 
     def process_spider_output(self, response, result, spider):
+        print('[middleware] CrawlerNewsSpiderMiddleware process_spider_output')
+
         # Called with the results returned from the Spider, after
         # it has processed the response.
 
-        # Must return an iterable of Request, dict or Item objects.
+        # Must return an iterable of Request, or item objects.
         for i in result:
             yield i
 
     def process_spider_exception(self, response, exception, spider):
+        print('[middleware] CrawlerNewsSpiderMiddleware process_spider_exception')
+
         # Called when a spider or process_spider_input() method
         # (from other spider middleware) raises an exception.
 
-        # Should return either None or an iterable of Request, dict
-        # or Item objects.
+        # Should return either None or an iterable of Request or item objects.
         pass
 
     def process_start_requests(self, start_requests, spider):
+        print('[middleware] CrawlerNewsSpiderMiddleware process_start_requests')
+
         # Called with the start requests of the spider, and works
         # similarly to the process_spider_output() method, except
         # that it doesn’t have a response associated.
@@ -53,22 +63,28 @@ class CrawlerNewsSpiderMiddleware(object):
             yield r
 
     def spider_opened(self, spider):
+        print('[middleware] CrawlerNewsSpiderMiddleware spider_opened')
+
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class CrawlerNewsDownloaderMiddleware(object):
+class CrawlerNewsDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
     @classmethod
     def from_crawler(cls, crawler):
+        print('[middleware] CrawlerNewsDownloaderMiddleware from_crawler')
+
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
     def process_request(self, request, spider):
+        print('[middleware] CrawlerNewsDownloaderMiddleware process_request')
+
         # Called for each request that goes through the downloader
         # middleware.
 
@@ -81,6 +97,8 @@ class CrawlerNewsDownloaderMiddleware(object):
         return None
 
     def process_response(self, request, response, spider):
+        print('[middleware] CrawlerNewsDownloaderMiddleware process_response')
+
         # Called with the response returned from the downloader.
 
         # Must either;
@@ -90,6 +108,8 @@ class CrawlerNewsDownloaderMiddleware(object):
         return response
 
     def process_exception(self, request, exception, spider):
+        print('[middleware] CrawlerNewsDownloaderMiddleware process_exception')
+
         # Called when a download handler or a process_request()
         # (from other downloader middleware) raises an exception.
 
@@ -100,4 +120,6 @@ class CrawlerNewsDownloaderMiddleware(object):
         pass
 
     def spider_opened(self, spider):
+        print('[middleware] CrawlerNewsDownloaderMiddleware spider_opened')
+
         spider.logger.info('Spider opened: %s' % spider.name)
