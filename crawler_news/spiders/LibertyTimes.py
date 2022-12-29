@@ -1,15 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl libertytimes
-
-# TODO 檢查 parser
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
+import json
 
 date_str = str(time.strftime("%F", time.localtime()))
 
@@ -28,13 +22,22 @@ class LibertytimesSpider(scrapy.Spider):
 
     def parse_list(self, response):
         # * raise 404
-        for page_url in response.css('ul.list>li>a.tit::attr(href)').getall():
-            yield scrapy.Request(url=page_url, callback=self.parse_news)
+        page_url_list = response.css('ul.list>li>a.tit::attr(href)').getall()
+
+        self.logger.info(page_url_list)
+
+        for page_url in page_url_list:
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
+        req_url = response.request.url
+
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
@@ -78,11 +81,11 @@ class LibertytimesSpider(scrapy.Spider):
 
     def _parse_text(self, response):
         if re.match('https://sports', response.url):
-            return response.css('div.news_p p *::text').getall()
+            return response.css('div.news_p p:not([class]) *::text').getall()
         elif re.match('https://ent', response.url):
-            return response.css('div.news_content p *::text').getall()
+            return response.css('div.news_content p:not([class]) *::text').getall()
         else:
-            return response.css('div.text>p *::text').getall()
+            return response.css('div.text>p:not([class]) *::text').getall()
 
     def _parse_text_html(self, response):
         if re.match('https://sports', response.url):
