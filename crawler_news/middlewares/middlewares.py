@@ -3,11 +3,14 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-from scrapy import signals
+from scrapy import signals, Item
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
+import json
+
+daily_sec = 60 * 60 * 24
 
 class CrawlerNewsSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -16,7 +19,7 @@ class CrawlerNewsSpiderMiddleware:
 
     @classmethod
     def from_crawler(cls, crawler):
-        print('[middleware] CrawlerNewsSpiderMiddleware from_crawler')
+        # print('[middleware] CrawlerNewsSpiderMiddleware from_crawler')
 
         # This method is used by Scrapy to create your spiders.
         s = cls()
@@ -24,7 +27,7 @@ class CrawlerNewsSpiderMiddleware:
         return s
 
     def process_spider_input(self, response, spider):
-        print('[middleware] CrawlerNewsSpiderMiddleware process_spider_input')
+        # print('[middleware] CrawlerNewsSpiderMiddleware process_spider_input')
 
         # Called for each response that goes through the spider
         # middleware and into the spider.
@@ -33,17 +36,19 @@ class CrawlerNewsSpiderMiddleware:
         return None
 
     def process_spider_output(self, response, result, spider):
-        print('[middleware] CrawlerNewsSpiderMiddleware process_spider_output')
+        # print('[middleware] CrawlerNewsSpiderMiddleware process_spider_output')
 
         # Called with the results returned from the Spider, after
         # it has processed the response.
 
         # Must return an iterable of Request, or item objects.
         for i in result:
+            if is_item(i) :
+                spider.redis_client.set(i.get('url'), json.dumps( dict(i) ), ex=daily_sec)
             yield i
 
     def process_spider_exception(self, response, exception, spider):
-        print('[middleware] CrawlerNewsSpiderMiddleware process_spider_exception')
+        # print('[middleware] CrawlerNewsSpiderMiddleware process_spider_exception')
 
         # Called when a spider or process_spider_input() method
         # (from other spider middleware) raises an exception.
@@ -52,7 +57,7 @@ class CrawlerNewsSpiderMiddleware:
         pass
 
     def process_start_requests(self, start_requests, spider):
-        print('[middleware] CrawlerNewsSpiderMiddleware process_start_requests')
+        # print('[middleware] CrawlerNewsSpiderMiddleware process_start_requests')
 
         # Called with the start requests of the spider, and works
         # similarly to the process_spider_output() method, except
@@ -63,7 +68,7 @@ class CrawlerNewsSpiderMiddleware:
             yield r
 
     def spider_opened(self, spider):
-        print('[middleware] CrawlerNewsSpiderMiddleware spider_opened')
+        # print('[middleware] CrawlerNewsSpiderMiddleware spider_opened')
 
         spider.logger.info('Spider opened: %s' % spider.name)
 
@@ -75,7 +80,7 @@ class CrawlerNewsDownloaderMiddleware:
 
     @classmethod
     def from_crawler(cls, crawler):
-        print('[middleware] CrawlerNewsDownloaderMiddleware from_crawler')
+        # print('[middleware] CrawlerNewsDownloaderMiddleware from_crawler')
 
         # This method is used by Scrapy to create your spiders.
         s = cls()
@@ -83,7 +88,7 @@ class CrawlerNewsDownloaderMiddleware:
         return s
 
     def process_request(self, request, spider):
-        print('[middleware] CrawlerNewsDownloaderMiddleware process_request')
+        # print('[middleware] CrawlerNewsDownloaderMiddleware process_request')
 
         # Called for each request that goes through the downloader
         # middleware.
@@ -97,7 +102,7 @@ class CrawlerNewsDownloaderMiddleware:
         return None
 
     def process_response(self, request, response, spider):
-        print('[middleware] CrawlerNewsDownloaderMiddleware process_response')
+        # print('[middleware] CrawlerNewsDownloaderMiddleware process_response')
 
         # Called with the response returned from the downloader.
 
@@ -108,7 +113,7 @@ class CrawlerNewsDownloaderMiddleware:
         return response
 
     def process_exception(self, request, exception, spider):
-        print('[middleware] CrawlerNewsDownloaderMiddleware process_exception')
+        # print('[middleware] CrawlerNewsDownloaderMiddleware process_exception')
 
         # Called when a download handler or a process_request()
         # (from other downloader middleware) raises an exception.
@@ -120,6 +125,6 @@ class CrawlerNewsDownloaderMiddleware:
         pass
 
     def spider_opened(self, spider):
-        print('[middleware] CrawlerNewsDownloaderMiddleware spider_opened')
+        # print('[middleware] CrawlerNewsDownloaderMiddleware spider_opened')
 
         spider.logger.info('Spider opened: %s' % spider.name)

@@ -23,10 +23,9 @@ class CkiptaggerPipeline:
 
         spider.redis_client.lpush('ckiptagger_worker_queue', json.dumps( {
             'url': item.get('url'),
+            'title': item.get('title'),
+            'tag': item.get('tag'),
             'text': item.get('text')
         }, ensure_ascii=False ))
-
-        # TODO 之後移到專屬pipeline才對
-        self.redis_client.set(item.get('url'), json.dumps( dict(item) ), ex=daily_sec)
 
         return item

@@ -26,14 +26,11 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
 `! Alexa停止營運了，之後再看看要換成什麼`
 
 1. [自由時報](https://www.ltn.com.tw/)
-    - [2022/12] 尚未檢查
+    - [2022/30] 已更新
 1. [東森新聞](https://news.ebc.net.tw/)
-    - [2022/12] 尚未檢查
-    - Few special case articles no use p tag
-    - Few special case articles video not in main span tag
+    - [2022/30] 已更新
 1. [聯合新聞網](https://udn.com/news/index)
-    - [2022/12] 尚未檢查
-    - Can be optimized
+    - [2022/12] 已更新
 1. [今日新聞](https://www.nownews.com/)
     - [2022/12] 尚未檢查
     - ajax.

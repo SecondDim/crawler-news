@@ -1,37 +1,42 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl ebc
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
 
+date_str = str(time.strftime("%F", time.localtime()))
+
 class EBCSpider(scrapy.Spider):
     name = 'ebc'
     allowed_domains = ['news.ebc.net.tw']
     base_url = 'https://news.ebc.net.tw'
-
-    date_str = str(time.strftime("%F", time.localtime()))
 
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
-        list_url = 'https://news.ebc.net.tw/Realtime'
+        list_url = '%s/realtime' % self.base_url
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        for page_url in response.css('div.white-box>a::attr(href)').getall():
-            yield scrapy.Request(url=self.base_url+page_url, callback=self.parse_news)
+        page_url_list = response.css('div.white-box>a::attr(href)').getall()
+
+        self.logger.info(page_url_list)
+
+        for page_url in page_url_list:
+            page_url = self.base_url+page_url
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
+        req_url = response.request.url
+
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
@@ -46,6 +51,7 @@ class EBCSpider(scrapy.Spider):
         item['links'] = self._parse_links(response)
 
         return item
+
     def _parse_title(self, response):
         return response.css('div.fncnews-content>h1::text').get()
 
@@ -64,13 +70,13 @@ class EBCSpider(scrapy.Spider):
         return response.css('div.keyword>a::text').getall()
 
     def _parse_text(self, response):
-        return response.css('span[data-reactroot=\'\'] p::text').getall()
+        return response.css('content-ad p::text').getall()
 
     def _parse_text_html(self, response):
-        return response.css('span[data-reactroot=\'\']').get()
+        return response.css('content-ad').get()
 
     def _parse_images(self, response):
-        allImgList=response.css('div.fncnews-content img::attr(src)').getall()
+        allImgList=response.css('content-ad img::attr(src)').getall()
         imgURLs=[]
         for imgurl in allImgList:
             if re.match(r'https://img.news.ebc.net.tw\S+',imgurl):
@@ -78,9 +84,9 @@ class EBCSpider(scrapy.Spider):
         return imgURLs
 
     def _parse_video(self, response):
-        fb_video=response.css('span[data-reactroot=\'\']').css('iframe::attr(src)').getall()
-        youtube=response.css('span[data-reactroot=\'\']').css('div.fb-video::attr(data-href)').getall()
+        fb_video=response.css('content-ad').css('iframe::attr(src)').getall()
+        youtube=response.css('content-ad').css('div.fb-video::attr(data-href)').getall()
         return fb_video+youtube
 
     def _parse_links(self, response):
-        return response.css('span[data-reactroot=\'\']').css('a::attr(href)').getall()
+        return response.css('content-ad').css('a::attr(href)').getall()

@@ -1,20 +1,15 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl ettoday -a page=$(date +"%Y-%m-%d")
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
 
+date_str = str(time.strftime("%F", time.localtime()))
+
 class UdnSpider(scrapy.Spider):
     name = 'udn'
     allowed_domains = ['udn.com']
     base_url = 'https://udn.com'
-
-    date_str = str(time.strftime("%F", time.localtime()))
 
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
@@ -25,14 +20,23 @@ class UdnSpider(scrapy.Spider):
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        # * raise 404
-        for page_url in response.css('div#breaknews_body>dl>dt h2>a::attr(href)').getall():
-            yield scrapy.Request(url=self.base_url + page_url, callback=self.parse_news)
+        page_url_list = response.css('div.story-list__news h2>a::attr(href)').getall()
+
+        self.logger.info(page_url_list)
+
+        for page_url in page_url_list:
+            page_url = self.base_url+page_url.split('?')[0]
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
+        req_url = response.request.url
+
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
@@ -49,25 +53,22 @@ class UdnSpider(scrapy.Spider):
         return item
 
     def _parse_title(self, response):
-        return response.css('h1#story_art_title::text').get()
+        return response.css('h1::text').get()
 
     def _parse_publish_date(self, response):
-        return response.css('div#story_bady_info span::text').get()
+        return response.css('time.article-content__time::text').get()
 
     def _parse_authors(self, response):
-        authors = response.css('div#story_bady_info>div>a::text').getall()
-        if len(authors) == 0:
-            authors = response.css('div#story_bady_info>div::text').getall()
-        return authors
+        return response.css('span.article-content__author a::text').get()
 
     def _parse_tags(self, response):
-        return response.css('div#story_tags>a::text').getall()
+        return response.css('section.keyword>a::text').getall()
 
     def _parse_text(self, response):
-        return response.css('div#article_body p *::text').getall()
+        return response.css('section.article-content__editor p *::text').getall()
 
     def _parse_text_html(self, response):
-        return response.css('div#article_body').get()
+        return response.css('section.article-content__editor').getall()
 
     def _parse_images(self, response):
         return response.css('div#article_body').css('img::attr(src)').getall()

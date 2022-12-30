@@ -3,11 +3,10 @@ from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
-import json
 
 date_str = str(time.strftime("%F", time.localtime()))
 
-class LibertytimesSpider(scrapy.Spider):
+class LibertyTimesSpider(scrapy.Spider):
     name = 'libertytimes'
     allowed_domains = ['ltn.com.tw']
     base_url = 'https://news.ltn.com.tw'
@@ -21,7 +20,6 @@ class LibertytimesSpider(scrapy.Spider):
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        # * raise 404
         page_url_list = response.css('ul.list>li>a.tit::attr(href)').getall()
 
         self.logger.info(page_url_list)
