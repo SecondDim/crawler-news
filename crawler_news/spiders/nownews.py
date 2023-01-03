@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl ettoday -a page=$(date +"%Y-%m-%d")
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
@@ -10,34 +5,39 @@ import time
 import re
 import json
 
+date_str = str(time.strftime("%F", time.localtime()))
+
 class NownewsSpider(scrapy.Spider):
     name = 'nownews'
     allowed_domains = ['nownews.com']
     base_url = 'https://www.nownews.com'
 
-    date_str = str(time.strftime("%F", time.localtime()))
-
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
-        'DEFAULT_REQUEST_HEADERS': {
-            'Accept': '*/*',
-            'Referer': 'https://www.nownews.com/',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+        # 'LOG_FILE': None,
+        # 'DEFAULT_REQUEST_HEADERS': {
+        #     'Accept': '*/*',
+        #     'Referer': 'https://www.nownews.com/',
+        # }
     }
 
     def start_requests(self):
-        list_url = '%s/WirelessFidelity/staticFiles/nownewsIndexpage/indexpageCacheJson' % (self.base_url)
+        list_url = '%s/cat/breaking/' % (self.base_url)
+        print(list_url)
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        # * raise 404
-        # * raise json decode error
-        json_body = json.loads(response.body_as_unicode())
-        for row in json_body:
-            yield scrapy.Request(url=row['link'], callback=self.parse_news)
+        page_url_list = response.css('a::attr(href)').getall()
+        for page_url in page_url_list:
+
+            if re.match('https://www.nownews.com/news/*', page_url) and not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
+        req_url = response.request.url
+
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
         item['url'] = response.url
@@ -57,29 +57,36 @@ class NownewsSpider(scrapy.Spider):
         return item
 
     def _parse_title(self, response):
-        return response.css('header>h1::text').get()
+        return response.css('h1.article-title::text').get()
 
     def _parse_publish_date(self, response):
-        return response.css('header>div.td-module-meta-info>span>time::text').get()
+        return response.css('time span::text').get()
 
     def _parse_authors(self, response):
-        return [response.css('header>div.td-module-meta-info>div.td-post-author-name::text').get().strip()]
+        return [response.css('div.infoBlk>div>p::text').get()]
 
     def _parse_tags(self, response):
-        return response.css('footer>div.td-post-source-tags>ul>li>a::text').getall()
+        return response.css('div.keywordBlk ul.tag li>a::text').getall()
 
     def _parse_text(self, response):
-        return response.css('article div.td-post-content span[itemprop=articleBody] p *::text').getall()
+        text = []
+        for t in response.css('article[itemprop=articleBody]::text').getall():
+            if t.strip() != '':
+                text.append(t.strip())
+        return text
 
     def _parse_text_html(self, response):
-        return response.css('article div.td-post-content').get()
+        return response.css('article[itemprop=articleBody]').get()
 
     def _parse_images(self, response):
-        return response.css('article div.td-post-content').css('img::attr(src)').getall()
+        return response.css('div.containerBlk').css('img::attr(src)').getall()
 
     def _parse_video(self, response):
+        # TODO
         return response.css('article noscript>iframe::attr(src)').getall()
 
     def _parse_links(self, response):
-        links = response.css('article div.td-post-content').css('a::attr(href)').getall()
-        return list(filter(lambda x:x if not x == '#' else None , links))
+        # TODO
+        # links = response.css('article div.td-post-content').css('a::attr(href)').getall()
+        # return list(filter(lambda x:x if not x == '#' else None , links))
+        return []
