@@ -29,7 +29,6 @@ class NownewsSpider(scrapy.Spider):
     def parse_list(self, response):
         page_url_list = response.css('a::attr(href)').getall()
         for page_url in page_url_list:
-
             if re.match('https://www.nownews.com/news/*', page_url) and not self.redis_client.exists(page_url):
                 yield scrapy.Request(url=page_url, callback=self.parse_news)
 
@@ -40,7 +39,7 @@ class NownewsSpider(scrapy.Spider):
 
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 

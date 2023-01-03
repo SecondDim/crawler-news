@@ -24,7 +24,7 @@ class CkiptaggerPipeline:
         spider.redis_client.lpush('ckiptagger_worker_queue', json.dumps( {
             'url': item.get('url'),
             'title': item.get('title'),
-            'tag': item.get('tag'),
+            'tags': item.get('tags'),
             'text': item.get('text')
         }, ensure_ascii=False ))
 
