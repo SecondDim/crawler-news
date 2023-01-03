@@ -5,19 +5,23 @@
 
 import scrapy
 from crawler_news.items import CrawlerNewsItem
+from scrapy.exceptions import IgnoreRequest
 
 import time
 import re
+
+date_str = str(time.strftime("%F", time.localtime()))
 
 class EttodaySpider(scrapy.Spider):
     name = 'ettoday'
     allowed_domains = ['ettoday.net']
     base_url = 'https://www.ettoday.net'
 
-    date_str = str(time.strftime("%F", time.localtime()))
-
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
+
+        # https://speed.ettoday.net/robots.txt
+        'ROBOTSTXT_OBEY': False
     }
 
     def start_requests(self):
@@ -25,18 +29,22 @@ class EttodaySpider(scrapy.Spider):
         date_page = getattr(self, 'page', time.strftime('%Y-%m-%d'))
         # * raise date_page.re('%Y-%m-%d')
 
-        list_url = '%s/news/news-list-%s-0.htm' % (self.base_url, date_page)
+        list_url = '%s/news/news-list.htm' % (self.base_url)
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
         # * raise 404
         for page_url in response.css('div.part_list_2>h3>a::attr(href)').getall():
-            yield scrapy.Request(url=self.base_url + page_url, callback=self.parse_news)
+            page_url = self.base_url+page_url
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url,callback=self.parse_news,cb_kwargs=dict(req_url=page_url))
 
-    def parse_news(self, response):
+    def parse_news(self, response, req_url):
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
