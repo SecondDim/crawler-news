@@ -34,7 +34,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
 1. [今日新聞](https://www.nownews.com/)
     - [2023/01/03] 已更新
 1. [ettoday](https://www.ettoday.net/)
-    - [2022/12] 尚未檢查
+    - [2023/01/03] 已更新
 1. [NEW] [巴哈姆特電玩資訊站](https://gnn.gamer.com.tw/)
     - TODO
 1. [風傳媒](https://www.storm.mg/)
@@ -45,8 +45,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - 不能用 cookie,session
     - 新聞整體格式非主流，例：文章時間
 1. [中時電子報](https://www.chinatimes.com/)
-    - [2022/12] 尚未檢查
-    - Can be optimized
+    - [2023/01/03] 已更新
 1. [今周刊](https://www.businesstoday.com.tw/)
     - [2022/12] 尚未檢查
     - Maybe need javascript

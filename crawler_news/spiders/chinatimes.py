@@ -26,7 +26,9 @@ class ChinatimesSpider(scrapy.Spider):
 
     def parse_list(self, response):
         for page_url in response.css('section.article-list>ul>li h3.title>a::attr(href)').getall():
-            yield scrapy.Request(url=self.base_url + page_url, callback=self.parse_news)
+            page_url = self.base_url + page_url
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
         item = CrawlerNewsItem()
