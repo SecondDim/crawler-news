@@ -12,7 +12,7 @@ import re
 
 date_str = str(time.strftime("%F", time.localtime()))
 
-class EttodaySpider(scrapy.Spider):
+class EtTodaySpider(scrapy.Spider):
     name = 'ettoday'
     allowed_domains = ['ettoday.net']
     base_url = 'https://www.ettoday.net'
