@@ -1,20 +1,15 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl setn
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
 import time
 import re
 
+date_str = str(time.strftime("%F", time.localtime()))
+
 class SetnSpider(scrapy.Spider):
     name = 'setn'
     allowed_domains = ['setn.com']
     base_url = 'https://www.setn.com'
-
-    date_str = str(time.strftime("%F", time.localtime()))
 
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
@@ -26,12 +21,18 @@ class SetnSpider(scrapy.Spider):
 
     def parse_list(self, response):
         for page_url in response.css('h3.view-li-title>a.gt ::attr(href)').getall():
-            yield scrapy.Request(url=self.base_url+page_url, callback=self.parse_news)
+            page_url = self.base_url + page_url
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
+        req_url = response.request.url
+
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
