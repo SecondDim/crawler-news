@@ -1,23 +1,14 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl tvbs
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
 import time
-import re
 
-from lxml import etree
-from scrapy import Selector
+date_str = str(time.strftime("%F", time.localtime()))
 
 class CnaSpider(scrapy.Spider):
     name = 'cna'
     allowed_domains = ['cna.com.tw']
     base_url = 'https://www.cna.com.tw'
-
-    date_str = str(time.strftime("%F", time.localtime()))
 
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
@@ -28,13 +19,18 @@ class CnaSpider(scrapy.Spider):
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        for page_url in response.css('ul#myMainList>li>a::attr(href)').getall():
-            yield scrapy.Request(url=page_url, callback=self.parse_news)
+        for page_url in response.css('#jsMainList>li>a::attr(href)').getall():
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news)
 
     def parse_news(self, response):
+        req_url = response.request.url
+
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
@@ -47,6 +43,12 @@ class CnaSpider(scrapy.Spider):
         item['images'] = self._parse_images(response)
         item['video'] = self._parse_video(response)
         item['links'] = self._parse_links(response)
+
+        print(item['url'])
+        print(item['title'])
+        print(item['tags'])
+        print(item['text'])
+        print("="*40)
 
         return item
 
@@ -62,8 +64,10 @@ class CnaSpider(scrapy.Spider):
         return list(map(lambda x: x[1:].split('）')[0], pre_authors))
 
     def _parse_tags(self, response):
-        # no tag
-        return []
+        tags = []
+        for t in response.css('.keywordTag a::text').getall():
+            tags.append(t.lstrip('#'))
+        return tags
 
     def _parse_text(self, response):
         return response.css('article.article div.paragraph p::text').getall()
