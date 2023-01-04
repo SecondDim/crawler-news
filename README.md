@@ -52,8 +52,7 @@ List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%
     - Non-instant news
     - Mostly for business news
 1. [TVBS](https://news.tvbs.com.tw/)
-    - [2022/12] 尚未檢查
-    - Can be optimized
+    - [2023/01/04] 已更新
 1. [商業週刊](https://www.businessweekly.com.tw/)
     - [2022/12] 尚未檢查
     - Non-instant news

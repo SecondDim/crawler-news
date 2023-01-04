@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl tvbs
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 

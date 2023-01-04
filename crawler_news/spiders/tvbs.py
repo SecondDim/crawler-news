@@ -1,38 +1,35 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl tvbs
-
-# TODO 檢查 parser
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 
 import time
-import re
+
+date_str = str(time.strftime("%F", time.localtime()))
 
 class TVBSSpider(scrapy.Spider):
     name = 'tvbs'
     allowed_domains = ['tvbs.com.tw']
     base_url = 'https://news.tvbs.com.tw'
 
-    date_str = str(time.strftime("%F", time.localtime()))
-
     custom_settings = {
         'LOG_FILE': 'log/%s-%s.log' % (name, date_str),
     }
 
     def start_requests(self):
-        yield scrapy.Request(url=self.base_url, callback=self.parse_list)
+        list_url = '%s/realtime' % (self.base_url)
+        yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):
-        for page_url in response.css('div#now_news>ul>li>a::attr(href)').getall():
-            yield scrapy.Request(url=self.base_url + page_url, callback=self.parse_news)
+        for page_url in response.css('div.news_list>div.list>ul>li>a:first-child::attr(href)').getall():
+            page_url = self.base_url + page_url
+            if not self.redis_client.exists(page_url):
+                yield scrapy.Request(url=page_url, callback=self.parse_news,cb_kwargs=dict(req_url=page_url))
 
-    def parse_news(self, response):
+    def parse_news(self, response, req_url):
+        self.logger.info(f"request page: {req_url}")
+
         item = CrawlerNewsItem()
 
-        item['url'] = response.url
+        item['url'] = req_url
         item['article_from'] = self.name
         item['article_type'] = 'news'
 
@@ -49,28 +46,35 @@ class TVBSSpider(scrapy.Spider):
         return item
 
     def _parse_title(self, response):
-        return response.css('h1::text').get()
+        return response.css('h1.title::text').get()
 
     def _parse_publish_date(self, response):
-        return response.css('div.time::text').get()
+        return response.css('div.author::text').re_first(r'[0-9]+/[0-9]+/[0-9]+ [0-9]+:[0-9]+')
 
     def _parse_authors(self, response):
-        return list(map(lambda x: x.strip(), response.css('h4 *::text').getall()))
+        return response.css('div.author>a::text').getall()
 
     def _parse_tags(self, response):
-        return response.css('div.adWords>ul>li a::text').getall()
+        tags = []
+        for t in response.css('div.article_keyword>a::text').getall():
+            tags.append(t.lstrip('#'))
+        return tags
 
     def _parse_text(self, response):
-        return response.css('div.newsdetail_content div.contxt *::text').getall()
+        text = []
+        for t in response.css('#news_detail_div::text,#news_detail_div>p::text').getall():
+            if t.strip() != '':
+                text.append(t.strip())
+        return text
 
     def _parse_text_html(self, response):
-        return response.css('div.newsdetail_content div.contxt').get()
+        return response.css('#news_detail_div').get()
 
     def _parse_images(self, response):
-        return response.css('div.newsdetail_content div.contxt').css('img::attr(src)').getall()
+        return response.css('.article_new').css('img::attr(src)').getall()
 
     def _parse_video(self, response):
-        return response.css('div.newsdetail_content div.contxt #ytframe iframe::attr(src)').getall()
+        return response.css('.article_new #ytframe iframe::attr(src)').getall()
 
     def _parse_links(self, response):
-        return response.css('div.newsdetail_content div.contxt').css('a::attr(href)').getall()
+        return response.css('.article_new').css('a::attr(href)').getall()

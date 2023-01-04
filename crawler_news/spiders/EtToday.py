@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# mac shell example
-# scrapy crawl ettoday -a page=$(date +"%Y-%m-%d")
-
 import scrapy
 from crawler_news.items import CrawlerNewsItem
 from scrapy.exceptions import IgnoreRequest
