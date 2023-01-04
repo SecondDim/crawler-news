@@ -44,12 +44,6 @@ class CnaSpider(scrapy.Spider):
         item['video'] = self._parse_video(response)
         item['links'] = self._parse_links(response)
 
-        print(item['url'])
-        print(item['title'])
-        print(item['tags'])
-        print(item['text'])
-        print("="*40)
-
         return item
 
     def _parse_title(self, response):

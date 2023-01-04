@@ -13,14 +13,10 @@ process = CrawlerProcess(settings)
 
 print('start')
 
-process.crawl(LibertyTimes.LibertyTimesSpider)
-process.crawl(ebc.EBCSpider)
-process.crawl(udn.UdnSpider)
-process.crawl(EtToday.EtTodaySpider)
-
-# for spider_name in process.spiders.list():
-#     print ("Running spider %s" % (spider_name))
-#     # process.crawl(spider_name)
+for spider_name in process.spiders.list():
+    if spider_name != 'localhost':
+        print ("Running spider %s" % (spider_name))
+        process.crawl(spider_name)
 
 
 process.start() # the script will block here until all crawling jobs are finished

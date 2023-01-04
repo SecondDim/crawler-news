@@ -8,7 +8,7 @@
 workdir=/home/bentsou/Project/crawler-news/
 cd $workdir
 
-# . $HOME/.profile;
-# /usr/bin/python $workdir/app.py
+. $HOME/.profile;
+/usr/bin/python $workdir/app.py
 
 # set +x
