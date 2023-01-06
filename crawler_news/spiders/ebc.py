@@ -70,7 +70,11 @@ class EBCSpider(scrapy.Spider):
         return response.css('div.keyword>a::text').getall()
 
     def _parse_text(self, response):
-        return response.css('content-ad p::text').getall()
+        text = []
+        for t in response.css('content-ad p::text').getall():
+            if t.strip() != '':
+                text.append(t.strip())
+        return text
 
     def _parse_text_html(self, response):
         return response.css('content-ad').get()

@@ -23,7 +23,6 @@ class NownewsSpider(scrapy.Spider):
 
     def start_requests(self):
         list_url = '%s/cat/breaking/' % (self.base_url)
-        print(list_url)
         yield scrapy.Request(url=list_url, callback=self.parse_list)
 
     def parse_list(self, response):

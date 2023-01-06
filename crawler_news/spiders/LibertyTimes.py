@@ -78,12 +78,20 @@ class LibertyTimesSpider(scrapy.Spider):
         return []
 
     def _parse_text(self, response):
+        text = []
+        reStr = ''
         if re.match('https://sports', response.url):
-            return response.css('div.news_p p:not([class]) *::text').getall()
+            reStr = 'div[itemprop="articleBody"] p::text'
         elif re.match('https://ent', response.url):
-            return response.css('div.news_content p:not([class]) *::text').getall()
+            reStr = 'div.news_content p:not([class]) *::text'
         else:
-            return response.css('div.text>p:not([class]) *::text').getall()
+            reStr = 'div.text>p:not([class]) *::text'
+
+        for t in response.css(reStr).getall():
+            if t.strip() != '':
+                text.append(t.strip())
+
+        return text
 
     def _parse_text_html(self, response):
         if re.match('https://sports', response.url):
