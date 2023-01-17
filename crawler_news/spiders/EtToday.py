@@ -102,13 +102,13 @@ class EtTodaySpider(scrapy.Spider):
 
     def _parse_text(self, response):
         text = []
-        for t in response.css('div.story>p *::text').getall():
+        for t in response.css('div.story[itemprop=articleBody]>p *::text').getall():
             if t.strip() != '':
                 text.append(t.strip())
         return text
 
     def _parse_text_html(self, response):
-        return response.css('div.story').get()
+        return response.css('div.story[itemprop=articleBody]').get()
 
     def _parse_images(self, response):
         return response.css('div.story').css('img::attr(src)').getall()

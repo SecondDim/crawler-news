@@ -64,7 +64,12 @@ class CnaSpider(scrapy.Spider):
         return tags
 
     def _parse_text(self, response):
-        return response.css('article.article div.paragraph p::text').getall()
+        ret = []
+        for i in range(0,10):
+            if len(response.css('article.article div.paragraph:nth-of-type(%s) p::text' % i).getall()) != 0:
+                ret = response.css('article.article div.paragraph:nth-of-type(%s) p::text' % i).getall()
+                break
+        return ret
 
     def _parse_text_html(self, response):
         return response.css('article.article div.paragraph').get()

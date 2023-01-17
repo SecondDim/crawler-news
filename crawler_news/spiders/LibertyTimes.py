@@ -87,7 +87,16 @@ class LibertyTimesSpider(scrapy.Spider):
         else:
             reStr = 'div.text>p:not([class]) *::text'
 
-        for t in response.css(reStr).getall():
+        if re.match('https://health', response.url) or re.match('https://art', response.url):
+            _text = []
+            for v in response.css(reStr).getall():
+                if v.strip().startswith('☆') or v.strip().startswith('自由健康網') or v.strip().startswith('自由藝文網'):
+                    continue
+                _text.append(v.strip())
+        else:
+            _text = response.css(reStr).getall()
+
+        for t in _text:
             if t.strip() != '':
                 text.append(t.strip())
 

@@ -66,7 +66,7 @@ class UdnSpider(scrapy.Spider):
 
     def _parse_text(self, response):
         text = []
-        for t in response.css('section.article-content__editor p *::text').getall():
+        for t in response.css('section.article-content__editor>p *::text').getall():
             if t.strip() != '':
                 text.append(t.strip())
         return text
