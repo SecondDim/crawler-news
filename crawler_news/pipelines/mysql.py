@@ -7,7 +7,7 @@
 
 import json
 from scrapy.exceptions import DropItem
-from src.MysqlDatabase import MysqlDatabase
+from crawler_news.extensions.MysqlDatabase import MysqlDatabase
 
 class MysqlPipeline(object):
 

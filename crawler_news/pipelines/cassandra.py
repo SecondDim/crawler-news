@@ -6,7 +6,7 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy.exceptions import DropItem
-from src.CassandraDatabase import CassandraDatabase
+from crawler_news.extensions.CassandraDatabase import CassandraDatabase
 
 class CassandraPipeline(object):
     # TODO set database env in setting.py

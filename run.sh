@@ -5,10 +5,10 @@
 
 # set -x
 
-workdir=/home/bentsou/Project/crawler-news/
-cd $workdir
+workdir=$(dirname "$0")
+cd "$workdir"
 
-. $HOME/.profile;
-/usr/bin/python $workdir/app.py
+# . $HOME/.profile;
+python app.py
 
 # set +x
