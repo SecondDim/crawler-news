@@ -1,190 +1,142 @@
-# Python crawler for news
+# Python Crawler for News
 
-Use python scrapy build crawler for real-time Taiwan NEWS website.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.9%2B-blue)
+![Scrapy](https://img.shields.io/badge/scrapy-2.13.4-green)
 
-使用 python scrapy 建置抓取台灣新聞網站即時新聞的爬蟲
+A real-time news crawler built with Python and Scrapy, designed to fetch latest news from major Taiwan news websites.
+使用 Python Scrapy 建置的台灣新聞網站即時爬蟲。
 
-## TODO LIST
+## Features
 
-- 整理 setting 與 cicd
-- 部署 line notify
+- **Real-time Crawling**: Fetches the latest news updates efficiently.
+- **Multiple Sources**: Supports various major Taiwan news outlets.
+- **Flexible Storage**: Supports saving data to Cassandra, MySQL, or JSON (via pipelines).
+- **Extensible**: Easy to add new spiders for additional news sites.
+- **Docker Support**: Ready-to-use Docker configuration for easy deployment.
 
-- 用成 k8s 部到 GKC，或是 VM 即可？
-- 實作多執行緒，同步爬蟲執行，使用 python script
-- 可以考慮實作 docker install shell
-- 持續修改 Bug
-- 實作全網站一次性爬蟲（提供給 production）
-- 消滅 TODO
-- 寫一隻資料庫清理爬蟲
+## Supported News Sites
 
-## TODO website
+| News Site | Website | Status |
+|-----------|---------|--------|
+| 自由時報 (Liberty Times) | [Website](https://www.ltn.com.tw/) | ✅ Active |
+| 東森新聞 (EBC) | [Website](https://news.ebc.net.tw/) | ✅ Active |
+| 聯合新聞網 (UDN) | [Website](https://udn.com/news/index) | ✅ Active |
+| 今日新聞 (NOWnews) | [Website](https://www.nownews.com/) | ✅ Active |
+| ETtoday | [Website](https://www.ettoday.net/) | ✅ Active |
+| 中時電子報 (China Times) | [Website](https://www.chinatimes.com/) | ✅ Active |
+| TVBS | [Website](https://news.tvbs.com.tw/) | ✅ Active |
+| 三立新聞網 (SETN) | [Website](https://www.setn.com/) | ✅ Active |
+| 中央通訊社 (CNA) | [Website](https://www.cna.com.tw/) | ✅ Active |
+| 巴哈姆特 (Gamer) | [Website](https://gnn.gamer.com.tw/) | 🚧 TODO |
+| 風傳媒 (Storm) | [Website](https://www.storm.mg/) | 🚧 TODO |
 
-List from [Alexa台灣排名](https://www.prlass.com/2992/%E5%8F%B0%E7%81%A3%E7%B6%B2%E8%B7%AF%E6%96%B0%E8%81%9E%E5%AA%92%E9%AB%94%E6%B5%81%E9%87%8F%E6%8E%92%E5%90%8D-2018-01/)
+## Requirements
 
-[update 2022/3] [Alexa台灣排名](https://www.prlass.com/4941/%E5%8F%B0%E7%81%A3%E5%AA%92%E9%AB%94%E6%8E%92%E5%90%8D2022%E5%B9%B43%E6%9C%88/)
+- Python 3.9+
+- Redis (for deduplication and queue management)
+- Database (Optional): Cassandra or MySQL
 
-`! Alexa停止營運了，之後再看看要換成什麼`
+## Installation
 
-1. [自由時報](https://www.ltn.com.tw/)
-    - [2022/12/30] 已更新
-1. [東森新聞](https://news.ebc.net.tw/)
-    - [2022/12/30] 已更新
-1. [聯合新聞網](https://udn.com/news/index)
-    - [2022/12/30] 已更新
-1. [今日新聞](https://www.nownews.com/)
-    - [2023/01/03] 已更新
-1. [ettoday](https://www.ettoday.net/)
-    - [2023/01/03] 已更新
-1. [NEW] [巴哈姆特電玩資訊站](https://gnn.gamer.com.tw/)
-    - TODO
-1. [風傳媒](https://www.storm.mg/)
-    - TODO
-1. [公司還在嗎?] [頻果新聞網](https://tw.appledaily.com/home)
-    - [2022/12] 尚未檢查
-    - 要使用 javascript
-    - 不能用 cookie,session
-    - 新聞整體格式非主流，例：文章時間
-1. [中時電子報](https://www.chinatimes.com/)
-    - [2023/01/03] 已更新
-1. [今周刊](https://www.businesstoday.com.tw/)
-    - [2022/12] 尚未檢查
-    - Maybe need javascript
-    - Non-instant news
-    - Mostly for business news
-1. [TVBS](https://news.tvbs.com.tw/)
-    - [2023/01/04] 已更新
-1. [商業週刊](https://www.businessweekly.com.tw/)
-    - [2022/12] 尚未檢查
-    - Non-instant news
-    - Mostly for business news
-1. [三立新聞網](https://www.setn.com/)
-    - [2023/01/03] 已更新
-1. [NEW] [民視新聞](https://www.ftvnews.com.tw/)
-    - [2022/12] 尚未檢查
-1. [中央通訊社](https://www.cna.com.tw/)
-    - [2023/01/04] 已更新
-1. [關鍵評論網](https://www.thenewslens.com/)
-    - [2022/12] 尚未檢查
-    - Non-instant news
+1. **Clone the repository**
 
+    ```bash
+    git clone https://github.com/SecondDim/crawler-news.git
+    cd crawler-news
+    ```
 
-## Crawler step
+2. **Install dependencies**
 
-1. Request real-time news lists.
-2. Request news page from setp.1 list.
-3. Parsing html and get target value. [item.py](crawler_news/items.py)
-    - url
-    - article_from
-    - article_type
-    - title
-    - publish_date
-    - authors
-    - tags
-    - text
-    - text_html
-    - images
-    - video
-    - links
-4. Save into database. [pipelines.py](crawler_news/pipelines.py)
-    - Default Use Cassandra
-    - [TODO][feature] Use Mongo or Mysql
-5. Done
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-## Requirement Install
+3. **Configuration**
+    Copy the example settings file and configure your environment:
 
-### Develop Env
+    ```bash
+    cp crawler_news/settings.py.example crawler_news/settings.py
+    ```
 
-- python 3.7.6
-- scrapy >= 2.0.0
-- Cassandra 3.11.4
-- Develop on macOS (main)
+    Edit `crawler_news/settings.py` to set up your database connections (Redis, MySQL, Cassandra) and other preferences.
 
-### python scrapy
+## Usage
+
+### Run All Spiders
+
+To run all spiders sequentially:
 
 ```bash
-    pip install scrapy
-    # or
-    pip3 install scrapy
+python app.py
+# or
+./run.sh
 ```
 
-### Install Cassandra Database
+### Run a Single Spider
 
-mac os
+To run a specific spider (e.g., `ettoday`):
 
 ```bash
-    brew install cassandra
+scrapy crawl ettoday
 ```
 
-python extension
+Available spiders: `chinatimes`, `cna`, `ebc`, `ettoday`, `libertytimes`, `nownews`, `setn`, `tvbs`, `udn`.
+
+## Docker Deployment
+
+You can run the crawler using Docker to avoid environment setup issues.
+
+### Build Image
 
 ```bash
-    pip install cassandra-driver
-    # or
-    pip3 install cassandra-driver
+docker build . -t crawler_news
 ```
 
-start cassandra
+### Run with Docker Compose
 
 ```bash
-    # start on bash
-    cassandra -f
+# Start services (Crawler + Redis + DBs if configured)
+docker-compose up -d
 
-    # start on backgroud
+# Stop services
+docker-compose down
 ```
 
-### Install Mysql Database
-
-mac os
+### Run Manually
 
 ```bash
-    brew install mysql
+# Run without database (using local tmp/log folders)
+docker run --rm -it -v $(pwd)/tmp:/src/tmp -v $(pwd)/log:/src/log crawler_news
 ```
 
-python extension
+## Project Structure
 
-```bash
-    pip install PyMySQL
-    # or
-    pip3 install PyMySQL
+```text
+crawler-news/
+├── crawler_news/           # Main Scrapy project folder
+│   ├── spiders/            # Spider definitions (one per news site)
+│   ├── pipelines/          # Data processing pipelines (DB, JSON)
+│   ├── extensions/         # Custom extensions (DB connectors)
+│   ├── items.py            # Data models
+│   └── settings.py         # Project configuration
+├── docker/                 # Docker related files
+├── app.py                  # Script to run all spiders
+├── run.sh                  # Shell script entry point
+├── requirements.txt        # Python dependencies
+└── scrapy.cfg              # Scrapy deployment config
 ```
 
-## RUN Project
+## Contributing
 
-### Run all in localhost terminal
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-```bash
-    ./run_spiders.sh
-```
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Run in Docker use docker-compose.yml
+## License
 
-1. build docker image
-
-```bash
-    docker build . -t crawler_news
-```
-
-If you want exec crawler without database. modify docker/setting.py and re-build.
-
-```bash
-    # run without database (linux base command)
-    docker run --rm -it -v `pwd`/tmp:/src/tmp -v `pwd`/log:/src/log crawler_news
-```
-
-If you want exec single crawler. modify Dockerfile and re-build.
-
-```Dockerfile
-    CMD ["/bin/bash"]
-    # or assign crawler
-    CMD ["scrapy", "crawl", "ettoday"]
-```
-
-1. run docker-compose
-
-```bash
-    # start
-    docker-compose up -d
-
-    # stop
-    docker-compose down
-```
+Distributed under the MIT License. See `LICENSE` for more information.
