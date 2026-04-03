@@ -1,7 +1,7 @@
 Scrapy==2.13.4
 pylint==4.0.4
 redis==5.2.1
-requests==2.32.5
+requests==2.33.0
 cassandra-driver==3.29.2
 PyMySQL==1.1.1
 jieba==0.42.1
